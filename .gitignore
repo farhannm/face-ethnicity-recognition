@@ -1,0 +1,54 @@
+# Virtual Environment
+venv/
+.venv/
+env/
+.env/
+ENV/
+
+# Dataset Directories
+dataset/raw/
+dataset/final_dataset/
+dataset/augmented_dataset/
+
+# Model Weights
+models/weights/
+
+# Python Compiled Files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Jupyter Notebook
+.ipynb_checkpoints
+
+# Environments
+.env
+.venv
+env/
+venv/
+ENV/
+
+# IDE Specific Files
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Logs
+*.log
+
+# Operating System Files
+.DS_Store
+Thumbs.db
+
+# Machine Learning Specific
+*.h5
+*.pkl
+*.joblib
+
+# Temporary Files
+*.tmp
+*.bak
+
+# Backup Files
+*.backup

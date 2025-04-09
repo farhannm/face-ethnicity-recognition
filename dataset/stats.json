@@ -1,0 +1,116 @@
+{
+  "augmentation_stats": {
+    "total_images": 6,
+    "normalized_images": 4,
+    "augmented_images": 12,
+    "faces_not_detected": 2,
+    "per_suku": {
+      "Melayu": {
+        "original": 1,
+        "normalized": 0,
+        "augmented": 2,
+        "faces_not_detected": 1
+      },
+      "Jawa": {
+        "original": 1,
+        "normalized": 1,
+        "augmented": 2,
+        "faces_not_detected": 0
+      },
+      "Sunda": {
+        "original": 4,
+        "normalized": 3,
+        "augmented": 8,
+        "faces_not_detected": 1
+      }
+    },
+    "augmentation_map": {
+      "train/Melayu/Shafira_Melayu_Datar_Kiri.PNG": {
+        "suku": "Melayu",
+        "split": "train",
+        "normalized": "normalized/train/Melayu/Shafira_Melayu_Datar_Kiri_normalized.PNG",
+        "face_detected": false,
+        "augmented_versions": [
+          "train/Melayu/Shafira_Melayu_Datar_Kiri_aug1.PNG",
+          "train/Melayu/Shafira_Melayu_Datar_Kiri_aug2.PNG"
+        ]
+      },
+      "train/Sunda/Fanza_Sunda_Senyum_Kiri.jpeg": {
+        "suku": "Sunda",
+        "split": "train",
+        "normalized": "normalized/train/Sunda/Fanza_Sunda_Senyum_Kiri_normalized.jpeg",
+        "face_detected": true,
+        "augmented_versions": [
+          "train/Sunda/Fanza_Sunda_Senyum_Kiri_aug1.jpeg",
+          "train/Sunda/Fanza_Sunda_Senyum_Kiri_aug2.jpeg"
+        ]
+      },
+      "train/Sunda/Fanza_Sunda_Datar_Kanan.jpeg": {
+        "suku": "Sunda",
+        "split": "train",
+        "normalized": "normalized/train/Sunda/Fanza_Sunda_Datar_Kanan_normalized.jpeg",
+        "face_detected": true,
+        "augmented_versions": [
+          "train/Sunda/Fanza_Sunda_Datar_Kanan_aug1.jpeg",
+          "train/Sunda/Fanza_Sunda_Datar_Kanan_aug2.jpeg"
+        ]
+      },
+      "train/Sunda/Fanza_Sunda_Senyum_Kanan.jpeg": {
+        "suku": "Sunda",
+        "split": "train",
+        "normalized": "normalized/train/Sunda/Fanza_Sunda_Senyum_Kanan_normalized.jpeg",
+        "face_detected": true,
+        "augmented_versions": [
+          "train/Sunda/Fanza_Sunda_Senyum_Kanan_aug1.jpeg",
+          "train/Sunda/Fanza_Sunda_Senyum_Kanan_aug2.jpeg"
+        ]
+      },
+      "train/Sunda/Fanza_Sunda_Datar_Kiri.jpeg": {
+        "suku": "Sunda",
+        "split": "train",
+        "normalized": "normalized/train/Sunda/Fanza_Sunda_Datar_Kiri_normalized.jpeg",
+        "face_detected": false,
+        "augmented_versions": [
+          "train/Sunda/Fanza_Sunda_Datar_Kiri_aug1.jpeg",
+          "train/Sunda/Fanza_Sunda_Datar_Kiri_aug2.jpeg"
+        ]
+      },
+      "test/Jawa/Nazla_Jawa_Kaget_Depan.JPG": {
+        "suku": "Jawa",
+        "split": "test",
+        "normalized": "normalized/test/Jawa/Nazla_Jawa_Kaget_Depan_normalized.JPG",
+        "face_detected": true,
+        "augmented_versions": [
+          "test/Jawa/Nazla_Jawa_Kaget_Depan_aug1.JPG",
+          "test/Jawa/Nazla_Jawa_Kaget_Depan_aug2.JPG"
+        ]
+      }
+    }
+  },
+  "split_stats": {
+    "train": {
+      "total": 7,
+      "per_suku": {
+        "Jawa": 1,
+        "Melayu": 2,
+        "Sunda": 4
+      }
+    },
+    "validation": {
+      "total": 3,
+      "per_suku": {
+        "Jawa": 1,
+        "Melayu": 1,
+        "Sunda": 1
+      }
+    },
+    "test": {
+      "total": 3,
+      "per_suku": {
+        "Jawa": 1,
+        "Melayu": 1,
+        "Sunda": 1
+      }
+    }
+  }
+}

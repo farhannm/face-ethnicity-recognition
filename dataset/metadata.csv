@@ -1,0 +1,14 @@
+path_gambar,nama,suku,ekspresi,sudut,pencahayaan,width,height
+dataset/raw/Nazla/Jawa/Nazla_Jawa_Kaget_Depan.JPG,Nazla,Jawa,Kaget,Depan,tidak_diketahui,1536,2048
+dataset/raw/Nazla/Jawa/Nazla_Jawa_Datar_Depan.JPG,Nazla,Jawa,Datar,Depan,tidak_diketahui,1536,2048
+dataset/raw/Nazla/Jawa/Nazla_Jawa_Senyum_Depan.JPG,Nazla,Jawa,Senyum,Depan,tidak_diketahui,1536,2048
+dataset/raw/Shafira/Melayu/Shafira_Melayu_Senyum_Depan.PNG,Shafira,Melayu,Senyum,Depan,tidak_diketahui,828,1089
+dataset/raw/Shafira/Melayu/Shafira_Melayu_Datar_Depan.PNG,Shafira,Melayu,Datar,Depan,tidak_diketahui,828,1100
+dataset/raw/Shafira/Melayu/Shafira_Melayu_Datar_Kiri.PNG,Shafira,Melayu,Datar,Kiri,tidak_diketahui,828,1090
+dataset/raw/Shafira/Melayu/Shafira_Melayu_Senyum_Kiri.PNG,Shafira,Melayu,Senyum,Kiri,tidak_diketahui,828,1099
+dataset/raw/Fanza/Sunda/Fanza_Sunda_Datar_Depan.jpeg,Fanza,Sunda,Datar,Depan,tidak_diketahui,1200,1599
+dataset/raw/Fanza/Sunda/Fanza_Sunda_Senyum_Kiri.jpeg,Fanza,Sunda,Senyum,Kiri,tidak_diketahui,1200,1599
+dataset/raw/Fanza/Sunda/Fanza_Sunda_Datar_Kanan.jpeg,Fanza,Sunda,Datar,Kanan,tidak_diketahui,1200,1599
+dataset/raw/Fanza/Sunda/Fanza_Sunda_Senyum_Kanan.jpeg,Fanza,Sunda,Senyum,Kanan,tidak_diketahui,1200,1599
+dataset/raw/Fanza/Sunda/Fanza_Sunda_Datar_Kiri.jpeg,Fanza,Sunda,Datar,Kiri,tidak_diketahui,1200,1599
+dataset/raw/Fanza/Sunda/Fanza_Sunda_Senyum_Depan.jpeg,Fanza,Sunda,Senyum,Depan,tidak_diketahui,1200,1599
