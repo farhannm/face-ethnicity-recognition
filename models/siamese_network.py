@@ -2,25 +2,14 @@ import numpy as np
 from scipy.spatial.distance import cosine
 import tensorflow as tf
 
-# Handle different TensorFlow/Keras import scenarios
-try:
-    # Try the new standalone keras import first
-    import keras
-    from keras.models import Model, Sequential
-    from keras.layers import Input, Conv2D, MaxPooling2D, Flatten, Dense, Lambda, BatchNormalization, Dropout, GlobalAveragePooling2D
-    from keras.regularizers import l2
-except ImportError:
-    try:
-        # Fall back to tensorflow.keras if standalone keras fails
-        from tensorflow import keras
-        from tensorflow.keras.models import Model, Sequential
-        from tensorflow.keras.layers import Input, Conv2D, MaxPooling2D, Flatten, Dense, Lambda, BatchNormalization, Dropout, GlobalAveragePooling2D
-        from tensorflow.keras.regularizers import l2
-    except ImportError:
-        # Provide clear error message if import fails
-        raise ImportError(
-            "Could not import Keras. Please install TensorFlow 2.x with: pip install tensorflow==2.13.0"
-        )
+# Explicitly import from tensorflow.keras
+from tensorflow.keras.models import Model, Sequential
+from tensorflow.keras.layers import (
+    Input, Conv2D, MaxPooling2D, Flatten, 
+    Dense, Lambda, BatchNormalization, 
+    Dropout, GlobalAveragePooling2D
+)
+from tensorflow.keras.regularizers import l2
 
 class SiameseNetwork:
     """

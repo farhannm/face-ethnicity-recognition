@@ -1,34 +1,17 @@
 import os
+import sys
 import cv2
 import numpy as np
-import io
-from PIL import Image
-import matplotlib.pyplot as plt
 import tempfile
 
 # Set page config must be the first Streamlit command
 import streamlit as st
 st.set_page_config(
     page_title="Face Ethnicity Recognition",
-    page_icon="🧑‍🤝‍🧑",
     layout="wide"
 )
 
-# Configure environment variable to prevent TensorFlow verbose messages
-os.environ['TF_CPP_MIN_LOG_LEVEL'] = '2'
-
-# Add a message about possible TensorFlow installation
-st.sidebar.warning("""
-### TensorFlow Installation
-It appears TensorFlow is not installed correctly. Try:
-```
-pip install tensorflow-macos==2.13.0  # For Mac M1/M2/M3
-# OR
-pip install tensorflow==2.13.0  # For other systems
-```
-""")
-
-# Define simple fallback functions
+# Fallback functions for preprocessing and visualization
 def preprocess_face_for_siamese(face):
     """Process face for siamese network"""
     face_resized = cv2.resize(face, (100, 100))
@@ -43,6 +26,8 @@ def preprocess_face_for_ethnicity(face):
 
 def plot_similarity_result(face1, face2, similarity_score, is_match):
     """Create a simple visualization fallback"""
+    import matplotlib.pyplot as plt
+    
     fig, axes = plt.subplots(1, 3, figsize=(12, 4))
     
     face1_rgb = cv2.cvtColor(face1, cv2.COLOR_BGR2RGB)
@@ -75,6 +60,9 @@ def plot_similarity_result(face1, face2, similarity_score, is_match):
 
 def plot_ethnicity_prediction(face_img, ethnicity, confidences):
     """Create a simple ethnicity prediction visualization fallback"""
+    import matplotlib.pyplot as plt
+    import numpy as np
+    
     fig, axes = plt.subplots(1, 2, figsize=(10, 5), gridspec_kw={'width_ratios': [1, 1.5]})
     
     face_rgb = cv2.cvtColor(face_img, cv2.COLOR_BGR2RGB)
@@ -83,7 +71,7 @@ def plot_ethnicity_prediction(face_img, ethnicity, confidences):
     axes[0].axis('off')
     
     ethnicities = list(confidences.keys())
-    scores = [confidences[e] for e in ethnicities]
+    scores = list(confidences.values())
     
     # Sort by confidence score
     sorted_indices = np.argsort(scores)
@@ -128,58 +116,12 @@ def draw_bounding_box(image, face_rect, label=None, color=(0, 255, 0), thickness
     
     return image_with_box
 
-# Try importing custom modules with error handling
-try:
-    from models.face_detector import HaarCascadeFaceDetector
-except Exception as e:
-    st.error(f"Error importing face detector: {e}")
-    # Create a mock face detector class
-    class HaarCascadeFaceDetector:
-        def __init__(self):
-            self.face_cascade = cv2.CascadeClassifier(cv2.data.haarcascades + 'haarcascade_frontalface_default.xml')
-            self.eye_cascade = cv2.CascadeClassifier(cv2.data.haarcascades + 'haarcascade_eye.xml')
-            self.target_size = (224, 224)
-            
-        def detect_faces(self, image, **kwargs):
-            gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY) if len(image.shape) == 3 else image.copy()
-            faces = self.face_cascade.detectMultiScale(gray, scaleFactor=1.1, minNeighbors=5, minSize=(30, 30))
-            face_images = []
-            for (x, y, w, h) in faces:
-                face_img = image[y:y+h, x:x+w]
-                face_img = cv2.resize(face_img, self.target_size)
-                face_images.append(face_img)
-            return faces, face_images
-            
-        def detect_and_align_face(self, image, target_size=(224, 224)):
-            gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY) if len(image.shape) == 3 else image.copy()
-            faces = self.face_cascade.detectMultiScale(gray, scaleFactor=1.1, minNeighbors=5, minSize=(30, 30))
-            if len(faces) == 0:
-                resized = cv2.resize(image, target_size)
-                return resized, False, None
-            (x, y, w, h) = faces[0]
-            face_img = image[y:y+h, x:x+w]
-            face_normalized = cv2.resize(face_img, target_size)
-            return face_normalized, True, (x, y, w, h)
-
-try:
-    from utils.face_preprocessing import preprocess_face_for_siamese, preprocess_face_for_ethnicity
-except ImportError:
-    # Already defined fallback functions above
-    st.warning("Using fallback face preprocessing functions. Full functionality may be limited.")
-    
-try:
-    from utils.visualization import plot_similarity_result, plot_ethnicity_prediction, draw_bounding_box
-except ImportError:
-    # Already defined fallback visualization functions above
-    st.warning("Using fallback visualization functions. Display quality may be reduced.")
-
-# Create mock classes for unavailable modules
+# Mock classes for Siamese and Ethnicity Classifier
 class SiameseNetwork:
     def __init__(self, **kwargs):
         self.threshold = 0.5
         
     def compare_faces(self, face1, face2, distance_metric='euclidean'):
-        # Return random similarity score in demo mode
         import random
         similarity = random.uniform(0.3, 0.8)
         is_match = similarity >= self.threshold
@@ -199,7 +141,6 @@ class EthnicityClassifier:
         self.class_names = class_names
         
     def predict_ethnicity(self, face_image):
-        # Return random predictions in demo mode
         import random
         confidences = {name: random.uniform(0.1, 0.6) for name in self.class_names}
         
@@ -216,63 +157,44 @@ class EthnicityClassifier:
     def load_weights(self, path):
         pass
 
-# Initialize face detector
+class HaarCascadeFaceDetector:
+    def __init__(self):
+        self.face_cascade = cv2.CascadeClassifier(cv2.data.haarcascades + 'haarcascade_frontalface_default.xml')
+        self.eye_cascade = cv2.CascadeClassifier(cv2.data.haarcascades + 'haarcascade_eye.xml')
+        self.target_size = (224, 224)
+        
+    def detect_faces(self, image, **kwargs):
+        gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY) if len(image.shape) == 3 else image.copy()
+        faces = self.face_cascade.detectMultiScale(gray, scaleFactor=1.1, minNeighbors=5, minSize=(30, 30))
+        face_images = []
+        for (x, y, w, h) in faces:
+            face_img = image[y:y+h, x:x+w]
+            face_img = cv2.resize(face_img, self.target_size)
+            face_images.append(face_img)
+        return faces, face_images
+        
+    def detect_and_align_face(self, image, target_size=(224, 224)):
+        gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY) if len(image.shape) == 3 else image.copy()
+        faces = self.face_cascade.detectMultiScale(gray, scaleFactor=1.1, minNeighbors=5, minSize=(30, 30))
+        if len(faces) == 0:
+            resized = cv2.resize(image, target_size)
+            return resized, False, None
+        (x, y, w, h) = faces[0]
+        face_img = image[y:y+h, x:x+w]
+        face_normalized = cv2.resize(face_img, target_size)
+        return face_normalized, True, (x, y, w, h)
+
 @st.cache_resource
 def load_face_detector():
-    try:
-        return HaarCascadeFaceDetector()
-    except Exception as e:
-        st.error(f"Error loading face detector: {e}")
-        return None
+    return HaarCascadeFaceDetector()
 
-# Initialize Siamese Network
 @st.cache_resource
 def load_siamese_network():
-    try:
-        # Try importing again inside the function (for proper caching)
-        try:
-            from models.siamese_network import SiameseNetwork
-            model = SiameseNetwork(input_shape=(100, 100, 3), embedding_dim=128)
-            
-            # Check if weights file exists and load it
-            if os.path.exists("models/weights/siamese_model.h5"):
-                try:
-                    model.load_weights("models/weights/siamese_model.h5")
-                except Exception as e:
-                    st.warning(f"Could not load siamese model weights: {e}")
-            
-            return model
-        except ImportError:
-            st.warning("Using demo mode for face similarity. Install TensorFlow for full functionality.")
-            return SiameseNetwork(input_shape=(100, 100, 3), embedding_dim=128)
-    except Exception as e:
-        st.error(f"Error loading siamese network: {e}")
-        return SiameseNetwork(input_shape=(100, 100, 3), embedding_dim=128)
+    return SiameseNetwork(input_shape=(100, 100, 3), embedding_dim=128)
 
-# Initialize Ethnicity Classifier
 @st.cache_resource
 def load_ethnicity_classifier():
-    try:
-        # Try importing again inside the function (for proper caching)
-        try:
-            from models.ethnicity_classifier import EthnicityClassifier
-            model = EthnicityClassifier(num_classes=3, input_shape=(224, 224, 3))
-            model.set_class_names(['Jawa', 'Sunda', 'Melayu'])
-            
-            # Check if weights file exists and load it
-            if os.path.exists("models/weights/ethnicity_classifier.h5"):
-                try:
-                    model.load_weights("models/weights/ethnicity_classifier.h5")
-                except Exception as e:
-                    st.warning(f"Could not load ethnicity classifier weights: {e}")
-            
-            return model
-        except ImportError:
-            st.warning("Using demo mode for ethnicity classification. Install TensorFlow for full functionality.")
-            return EthnicityClassifier(num_classes=3, input_shape=(224, 224, 3))
-    except Exception as e:
-        st.error(f"Error loading ethnicity classifier: {e}")
-        return EthnicityClassifier(num_classes=3, input_shape=(224, 224, 3))
+    return EthnicityClassifier(num_classes=3, input_shape=(224, 224, 3))
 
 # Function to convert uploaded file to OpenCV image
 def load_image_from_upload(uploaded_file):
@@ -287,17 +209,6 @@ def load_image_from_upload(uploaded_file):
     
     return img
 
-# Function to save uploaded file to temp folder
-def save_uploaded_file(uploaded_file):
-    try:
-        with tempfile.NamedTemporaryFile(delete=False, suffix='.jpg') as tmp:
-            tmp.write(uploaded_file.getvalue())
-            return tmp.name
-    except Exception as e:
-        st.error(f"Error saving file: {e}")
-        return None
-
-# Main app function
 def main():
     try:
         # Display app in demo mode if TensorFlow is not available
@@ -319,10 +230,6 @@ def main():
         
         # Load models with error handling
         face_detector = load_face_detector()
-        if face_detector is None:
-            st.error("Face detector could not be loaded. The app will have limited functionality.")
-            return
-        
         siamese_network = load_siamese_network()
         ethnicity_classifier = load_ethnicity_classifier()
         
@@ -338,7 +245,7 @@ def main():
             ["About", "Face Similarity", "Ethnicity Detection"]
         )
         
-        # About section
+        # About section (same as before)
         if app_mode == "About":
             st.markdown("""
             # About
@@ -375,6 +282,66 @@ def main():
             st.sidebar.markdown("## Adjust threshold for face matching")
             threshold = st.sidebar.slider("Similarity Threshold", 0.0, 1.0, 0.5, 0.01)
             siamese_network.set_threshold(threshold)
+        
+        # Ethnicity Detection section
+        elif app_mode == "Ethnicity Detection":
+            st.header("Ethnicity Detection")
+            
+            # Upload image
+            st.markdown("### Upload Face Image")
+            uploaded_file = st.file_uploader("Choose an image...", type=["jpg", "jpeg", "png"])
+            
+            # Process image if uploaded
+            if uploaded_file is not None:
+                # Load image
+                image = load_image_from_upload(uploaded_file)
+                
+                # Process button
+                if st.button("Detect Ethnicity"):
+                    try:
+                        # Detect and align face
+                        with st.spinner("Detecting and aligning face..."):
+                            normalized_face, face_found, face_rect = face_detector.detect_and_align_face(
+                                image, target_size=(224, 224))
+                        
+                        # Check if face was detected
+                        if not face_found:
+                            st.warning("No face detected clearly. Results may not be accurate.")
+                        
+                        # Draw face bounding box if detected
+                        if face_rect is not None:
+                            image_with_box = draw_bounding_box(image, face_rect)
+                            st.image(cv2.cvtColor(image_with_box, cv2.COLOR_BGR2RGB), caption="Input image with detected face")
+                        else:
+                            st.image(cv2.cvtColor(image, cv2.COLOR_BGR2RGB), caption="Input image")
+                        
+                        # Preprocess face for ethnicity classification
+                        with st.spinner("Classifying ethnicity..."):
+                            face_processed = preprocess_face_for_ethnicity(normalized_face)
+                            
+                            # Classify ethnicity
+                            ethnicity, confidence, all_confidences = ethnicity_classifier.predict_ethnicity(face_processed)
+                        
+                        # Display results
+                        st.markdown("### Results")
+                        st.markdown(f"**Predicted Ethnicity:** {ethnicity}")
+                        st.markdown(f"**Confidence:** {confidence:.4f}")
+                        
+                        # Confidence bar
+                        st.markdown("### Confidence Scores")
+                        for eth, conf in all_confidences.items():
+                            st.progress(float(conf))  # Ensure float conversion
+                            st.text(f"{eth}: {conf:.4f}")
+                        
+                        # Visualization
+                        fig = plot_ethnicity_prediction(normalized_face, ethnicity, all_confidences)
+                        st.pyplot(fig)
+                        
+                        # Display aligned face
+                        st.markdown("### Preprocessed Face")
+                        st.image(cv2.cvtColor(normalized_face, cv2.COLOR_BGR2RGB), caption="Aligned and normalized face")
+                    except Exception as e:
+                        st.error(f"Error during ethnicity detection: {e}")
         
         # Face Similarity section
         elif app_mode == "Face Similarity":
@@ -458,66 +425,6 @@ def main():
                             st.pyplot(fig)
                     except Exception as e:
                         st.error(f"Error during face comparison: {e}")
-        
-        # Ethnicity Detection section
-        elif app_mode == "Ethnicity Detection":
-            st.header("Ethnicity Detection")
-            
-            # Upload image
-            st.markdown("### Upload Face Image")
-            uploaded_file = st.file_uploader("Choose an image...", type=["jpg", "jpeg", "png"])
-            
-            # Process image if uploaded
-            if uploaded_file is not None:
-                # Load image
-                image = load_image_from_upload(uploaded_file)
-                
-                # Process button
-                if st.button("Detect Ethnicity"):
-                    try:
-                        # Detect and align face
-                        with st.spinner("Detecting and aligning face..."):
-                            normalized_face, face_found, face_rect = face_detector.detect_and_align_face(
-                                image, target_size=(224, 224))
-                        
-                        # Check if face was detected
-                        if not face_found:
-                            st.warning("No face detected clearly. Results may not be accurate.")
-                        
-                        # Draw face bounding box if detected
-                        if face_rect is not None:
-                            image_with_box = draw_bounding_box(image, face_rect)
-                            st.image(cv2.cvtColor(image_with_box, cv2.COLOR_BGR2RGB), caption="Input image with detected face")
-                        else:
-                            st.image(cv2.cvtColor(image, cv2.COLOR_BGR2RGB), caption="Input image")
-                        
-                        # Preprocess face for ethnicity classification
-                        with st.spinner("Classifying ethnicity..."):
-                            face_processed = preprocess_face_for_ethnicity(normalized_face)
-                            
-                            # Classify ethnicity
-                            ethnicity, confidence, all_confidences = ethnicity_classifier.predict_ethnicity(face_processed)
-                        
-                        # Display results
-                        st.markdown("### Results")
-                        st.markdown(f"**Predicted Ethnicity:** {ethnicity}")
-                        st.markdown(f"**Confidence:** {confidence:.4f}")
-                        
-                        # Confidence bar
-                        st.markdown("### Confidence Scores")
-                        for eth, conf in all_confidences.items():
-                            st.progress(conf)
-                            st.text(f"{eth}: {conf:.4f}")
-                        
-                        # Visualization
-                        fig = plot_ethnicity_prediction(normalized_face, ethnicity, all_confidences)
-                        st.pyplot(fig)
-                        
-                        # Display aligned face
-                        st.markdown("### Preprocessed Face")
-                        st.image(cv2.cvtColor(normalized_face, cv2.COLOR_BGR2RGB), caption="Aligned and normalized face")
-                    except Exception as e:
-                        st.error(f"Error during ethnicity detection: {e}")
 
     except Exception as e:
         st.error(f"An unexpected error occurred: {e}")
