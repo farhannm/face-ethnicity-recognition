@@ -118,7 +118,6 @@ source venv/bin/activate
 ### 2. Kloning Repositori
 
 ```bash
-# Pastikan Anda sudah menginstal git
 git clone https://github.com/farhannm/face-ethnicity-recognition.git
 cd face-ethnicity-recognition
 ```
@@ -148,28 +147,7 @@ mkdir -p dataset/final_dataset
 mkdir -p dataset/augmented_dataset
 ```
 
-### 5. Download Model Pra-Latih (Opsional)
-
-```bash
-# Download bobot model yang sudah dilatih (jika tersedia)
-# Contoh perintah (sesuaikan dengan cara download di proyek Anda)
-python download_models.py
-```
-
-### 6. Konfigurasi Awal
-
-```bash
-# Salin file konfigurasi contoh
-cp config.example.yaml config.yaml
-
-# Edit konfigurasi sesuai kebutuhan
-# Gunakan text editor favorit Anda
-nano config.yaml
-# atau
-code config.yaml
-```
-
-### 7. Jalankan Aplikasi
+### 5. Jalankan Aplikasi
 
 ```bash
 # Jalankan aplikasi Streamlit
