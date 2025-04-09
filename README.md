@@ -119,7 +119,7 @@ source venv/bin/activate
 
 ```bash
 # Pastikan Anda sudah menginstal git
-git clone [URL_REPOSITORI_ANDA]
+git clone https://github.com/farhannm/face-ethnicity-recognition.git
 cd face-ethnicity-recognition
 ```
 
