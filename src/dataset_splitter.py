@@ -1,10 +1,24 @@
 import os
 import shutil
 from sklearn.model_selection import train_test_split
+import re
 
-def split_dataset(input_dir, output_dir, test_size=0.3, random_state=42):
+def split_dataset(input_dir, output_dir, test_size=0.15, val_size=0.15, random_state=42):
     """
-    Split dataset menjadi train, validation, dan test
+    Split dataset menjadi train, validation, dan test sesuai dengan ketentuan:
+    - 70% training
+    - 15% validation
+    - 15% testing
+    
+    Args:
+        input_dir: Direktori yang berisi dataset raw
+        output_dir: Direktori untuk menyimpan hasil split
+        test_size: Proporsi data untuk test set (default: 0.15)
+        val_size: Proporsi data untuk validation set (default: 0.15)
+        random_state: Random seed untuk reproduksibilitas
+    
+    Returns:
+        dataset_stats: Statistik hasil split dataset
     """
     # Buat direktori output
     os.makedirs(output_dir, exist_ok=True)
@@ -23,68 +37,97 @@ def split_dataset(input_dir, output_dir, test_size=0.3, random_state=42):
         'test': {'total': 0, 'per_suku': {}}
     }
     
-    # Proses setiap subjek
-    for subjek in os.listdir(input_dir):
-        subjek_path = os.path.join(input_dir, subjek)
-        
-        if not os.path.isdir(subjek_path):
+    # Dictionary untuk melacak semua gambar per subjek dan suku
+    all_images = {}
+    
+    # Scan direktori input untuk mengumpulkan semua gambar
+    for suku in os.listdir(input_dir):
+        suku_path = os.path.join(input_dir, suku)
+        if not os.path.isdir(suku_path):
             continue
-        
-        # Proses setiap suku
-        for suku in os.listdir(subjek_path):
-            suku_path = os.path.join(subjek_path, suku)
-            
-            if not os.path.isdir(suku_path):
+
+        for subjek in os.listdir(suku_path):
+            subjek_path = os.path.join(suku_path, subjek)
+            if not os.path.isdir(subjek_path):
                 continue
-            
-            # Buat direktori suku di setiap split
-            train_suku_dir = os.path.join(train_dir, suku)
-            val_suku_dir = os.path.join(val_dir, suku)
-            test_suku_dir = os.path.join(test_dir, suku)
-            
-            os.makedirs(train_suku_dir, exist_ok=True)
-            os.makedirs(val_suku_dir, exist_ok=True)
-            os.makedirs(test_suku_dir, exist_ok=True)
-            
-            # Ambil semua gambar
-            images = [
-                img for img in os.listdir(suku_path) 
-                if img.lower().endswith(('.png', '.jpg', '.jpeg', '.JPG'))
-            ]
-            
-            # Split dataset
+
+            for img_name in os.listdir(subjek_path):
+                if img_name.lower().endswith(('.png', '.jpg', '.jpeg', '.JPG', '.bmp', '.tiff')):
+                    # Inisialisasi entri suku jika belum ada
+                    if suku not in all_images:
+                        all_images[suku] = []
+
+                    all_images[suku].append({
+                        'subjek': subjek,
+                        'suku': suku,
+                        'img_name': img_name,
+                        'full_path': os.path.join(subjek_path, img_name)
+                    })
+
+    
+    # Buat split untuk setiap suku
+    for suku, images in all_images.items():
+        # Buat direktori suku di setiap split
+        train_suku_dir = os.path.join(train_dir, suku)
+        val_suku_dir = os.path.join(val_dir, suku)
+        test_suku_dir = os.path.join(test_dir, suku)
+        
+        os.makedirs(train_suku_dir, exist_ok=True)
+        os.makedirs(val_suku_dir, exist_ok=True)
+        os.makedirs(test_suku_dir, exist_ok=True)
+        
+        # Inisialisasi statistik per suku
+        if suku not in dataset_stats['train']['per_suku']:
+            dataset_stats['train']['per_suku'][suku] = 0
+        if suku not in dataset_stats['validation']['per_suku']:
+            dataset_stats['validation']['per_suku'][suku] = 0
+        if suku not in dataset_stats['test']['per_suku']:
+            dataset_stats['test']['per_suku'][suku] = 0
+        
+        # Jika jumlah gambar terlalu sedikit, kirim semua ke training
+        if len(images) < 5:
+            train_images = images
+            val_images = []
+            test_images = []
+        else:
+            # Split dataset menggunakan sklearn
+            # First, split out test set (15%)
             train_val_images, test_images = train_test_split(
                 images, 
-                test_size=0.15,  # 15% untuk test
+                test_size=test_size,
                 random_state=random_state
             )
-
+            
+            # Then split the remaining into train (70%) and validation (15%)
+            # Calculate val_size as a proportion of train_val_images
+            effective_val_size = val_size / (1 - test_size)
+            
             train_images, val_images = train_test_split(
                 train_val_images, 
-                test_size=0.176,  # 15% dari total (0.176 * 0.85 = 0.15)
+                test_size=effective_val_size,
                 random_state=random_state
             )
-            
-            # Salin gambar ke masing-masing split
-            def copy_images(image_list, dest_dir):
-                for img in image_list:
-                    src_path = os.path.join(suku_path, img)
-                    dest_path = os.path.join(dest_dir, img)
-                    shutil.copy2(src_path, dest_path)
-                return len(image_list)
-            
-            # Salin dan catat statistik
-            train_count = copy_images(train_images, train_suku_dir)
-            val_count = copy_images(val_images, val_suku_dir)
-            test_count = copy_images(test_images, test_suku_dir)
-            
-            # Update statistik
-            dataset_stats['train']['total'] += train_count
-            dataset_stats['validation']['total'] += val_count
-            dataset_stats['test']['total'] += test_count
-            
-            dataset_stats['train']['per_suku'][suku] = train_count
-            dataset_stats['validation']['per_suku'][suku] = val_count
-            dataset_stats['test']['per_suku'][suku] = test_count
+        
+        # Salin gambar ke masing-masing split
+        for img_info in train_images:
+            src_path = img_info['full_path']
+            dest_path = os.path.join(train_suku_dir, img_info['img_name'])
+            shutil.copy2(src_path, dest_path)
+            dataset_stats['train']['total'] += 1
+            dataset_stats['train']['per_suku'][suku] += 1
+        
+        for img_info in val_images:
+            src_path = img_info['full_path']
+            dest_path = os.path.join(val_suku_dir, img_info['img_name'])
+            shutil.copy2(src_path, dest_path)
+            dataset_stats['validation']['total'] += 1
+            dataset_stats['validation']['per_suku'][suku] += 1
+        
+        for img_info in test_images:
+            src_path = img_info['full_path']
+            dest_path = os.path.join(test_suku_dir, img_info['img_name'])
+            shutil.copy2(src_path, dest_path)
+            dataset_stats['test']['total'] += 1
+            dataset_stats['test']['per_suku'][suku] += 1
     
     return dataset_stats

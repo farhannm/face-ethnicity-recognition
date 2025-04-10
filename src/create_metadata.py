@@ -1,66 +1,84 @@
 import os
 import csv
 import cv2
+from utils.face_preprocessing import parse_image_metadata
 
 def create_metadata_csv(input_dir, output_path):
     """
     Buat metadata CSV dari dataset
+    
+    Args:
+        input_dir: Direktori yang berisi dataset raw
+        output_path: Path untuk menyimpan file CSV metadata
+    
+    Returns:
+        metadata: List dari metadata gambar
     """
     # Persiapkan list untuk menyimpan metadata
     metadata = []
     
-    # Iterasi setiap subjek
-    for subjek in os.listdir(input_dir):
-        subjek_path = os.path.join(input_dir, subjek)
-        
-        if not os.path.isdir(subjek_path):
+    # Iterasi setiap suku
+    for suku in os.listdir(input_dir):
+        suku_path = os.path.join(input_dir, suku)
+        if not os.path.isdir(suku_path):
             continue
         
-        # Iterasi setiap suku
-        for suku in os.listdir(subjek_path):
-            suku_path = os.path.join(subjek_path, suku)
-            
-            if not os.path.isdir(suku_path):
+        # Iterasi setiap subjek
+        for subjek in os.listdir(suku_path):
+            subjek_path = os.path.join(suku_path, subjek)
+            if not os.path.isdir(subjek_path):
                 continue
             
             # Iterasi setiap gambar
-            for img_name in os.listdir(suku_path):
-                img_path = os.path.join(suku_path, img_name)
+            for img_name in os.listdir(subjek_path):
+                if not img_name.lower().endswith(('.png', '.jpg', '.jpeg', '.JPG', '.bmp', '.tiff')):
+                    continue
+                
+                img_path = os.path.join(subjek_path, img_name)
                 
                 # Baca gambar untuk mendapatkan informasi tambahan
                 try:
                     image = cv2.imread(img_path)
-                    height, width, _ = image.shape
+                    if image is None:
+                        print(f"Error membaca gambar {img_path}: Format tidak didukung")
+                        continue
+                    
+                    height, width = image.shape[:2]
                 except Exception as e:
                     print(f"Error membaca gambar {img_path}: {e}")
                     continue
                 
-                # Ekstrak informasi dari nama file
-                file_parts = os.path.splitext(img_name)[0].split('_')
+                # Parse metadata dari nama file
+                file_metadata = parse_image_metadata(img_name)
                 
-                # Default values
-                ekspresi = file_parts[-2] if len(file_parts) > 2 else 'tidak_diketahui'
-                sudut = file_parts[-1] if len(file_parts) > 3 else 'tidak_diketahui'
+                # Tambahkan informasi dimensi dan path
+                file_metadata.update({
+                    'path_gambar': img_path,
+                    'width': width,
+                    'height': height,
+                    'suku': suku,
+                    'subjek': subjek
+                })
+                
+                # Jika tidak ada nama di metadata, gunakan nama subjek
+                if file_metadata['nama'] == 'unknown':
+                    file_metadata['nama'] = subjek
+                
+                # Jika tidak ada suku di metadata, gunakan suku dari direktori
+                if file_metadata['suku'] == 'unknown':
+                    file_metadata['suku'] = suku
                 
                 # Tambahkan ke metadata
-                metadata.append({
-                    'path_gambar': img_path,
-                    'nama': file_parts[0],
-                    'suku': suku,
-                    'ekspresi': ekspresi,
-                    'sudut': sudut,
-                    'pencahayaan': 'tidak_diketahui',
-                    'width': width,
-                    'height': height
-                })
+                metadata.append(file_metadata)
     
     # Tulis ke CSV
     with open(output_path, 'w', newline='', encoding='utf-8') as csvfile:
-        fieldnames = [
-            'path_gambar', 'nama', 'suku', 
-            'ekspresi', 'sudut', 'pencahayaan', 
-            'width', 'height'
-        ]
+        # Gabungkan semua kemungkinan field dari semua metadata
+        all_fields = set()
+        for entry in metadata:
+            all_fields.update(entry.keys())
+        
+        fieldnames = sorted(list(all_fields))
         
         writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
         writer.writeheader()

@@ -1,115 +1,988 @@
 {
   "augmentation_stats": {
-    "total_images": 6,
-    "normalized_images": 4,
-    "augmented_images": 12,
-    "faces_not_detected": 2,
+    "total_images": 49,
+    "normalized_images": 48,
+    "augmented_images": 165,
+    "faces_not_detected": 1,
     "per_suku": {
       "Melayu": {
-        "original": 1,
-        "normalized": 0,
-        "augmented": 2,
+        "original": 17,
+        "normalized": 16,
+        "augmented": 55,
         "faces_not_detected": 1
       },
       "Jawa": {
-        "original": 1,
-        "normalized": 1,
-        "augmented": 2,
+        "original": 12,
+        "normalized": 12,
+        "augmented": 40,
         "faces_not_detected": 0
       },
       "Sunda": {
-        "original": 4,
-        "normalized": 3,
-        "augmented": 8,
-        "faces_not_detected": 1
+        "original": 20,
+        "normalized": 20,
+        "augmented": 70,
+        "faces_not_detected": 0
       }
     },
     "augmentation_map": {
-      "train/Melayu/Shafira_Melayu_Datar_Kiri.PNG": {
+      "train/Melayu/Namira_Melayu_Tersenyum_Miring_Terang_Jauh.jpg": {
         "suku": "Melayu",
         "split": "train",
-        "normalized": "normalized/train/Melayu/Shafira_Melayu_Datar_Kiri_normalized.PNG",
+        "normalized": "normalized/train/Melayu/Namira_Melayu_Tersenyum_Miring_Terang_Jauh_normalized.jpg",
+        "face_detected": true,
+        "augmented_versions": [
+          "train/Melayu/Namira_Melayu_Tersenyum_Miring_Terang_Jauh_aug1.jpg",
+          "train/Melayu/Namira_Melayu_Tersenyum_Miring_Terang_Jauh_aug2.jpg",
+          "train/Melayu/Namira_Melayu_Tersenyum_Miring_Terang_Jauh_aug3.jpg",
+          "train/Melayu/Namira_Melayu_Tersenyum_Miring_Terang_Jauh_aug4.jpg",
+          "train/Melayu/Namira_Melayu_Tersenyum_Miring_Terang_Jauh_aug5.jpg"
+        ],
+        "metadata": {
+          "nama": "Namira",
+          "suku": "Melayu",
+          "ekspresi": "Tersenyum",
+          "sudut": "Miring",
+          "pencahayaan": "Terang",
+          "jarak": "Jauh"
+        }
+      },
+      "train/Melayu/Namira_Melayu_Tersenyum_Frontal_Terang_Dekat.jpg": {
+        "suku": "Melayu",
+        "split": "train",
+        "normalized": "normalized/train/Melayu/Namira_Melayu_Tersenyum_Frontal_Terang_Dekat_normalized.jpg",
+        "face_detected": true,
+        "augmented_versions": [
+          "train/Melayu/Namira_Melayu_Tersenyum_Frontal_Terang_Dekat_aug1.jpg",
+          "train/Melayu/Namira_Melayu_Tersenyum_Frontal_Terang_Dekat_aug2.jpg",
+          "train/Melayu/Namira_Melayu_Tersenyum_Frontal_Terang_Dekat_aug3.jpg",
+          "train/Melayu/Namira_Melayu_Tersenyum_Frontal_Terang_Dekat_aug4.jpg",
+          "train/Melayu/Namira_Melayu_Tersenyum_Frontal_Terang_Dekat_aug5.jpg"
+        ],
+        "metadata": {
+          "nama": "Namira",
+          "suku": "Melayu",
+          "ekspresi": "Tersenyum",
+          "sudut": "Frontal",
+          "pencahayaan": "Terang",
+          "jarak": "Dekat"
+        }
+      },
+      "train/Melayu/Shafira_Melayu_Tersenyum_Miring_Terang_Jauh.jpg": {
+        "suku": "Melayu",
+        "split": "train",
+        "normalized": "normalized/train/Melayu/Shafira_Melayu_Tersenyum_Miring_Terang_Jauh_normalized.jpg",
+        "face_detected": true,
+        "augmented_versions": [
+          "train/Melayu/Shafira_Melayu_Tersenyum_Miring_Terang_Jauh_aug1.jpg",
+          "train/Melayu/Shafira_Melayu_Tersenyum_Miring_Terang_Jauh_aug2.jpg",
+          "train/Melayu/Shafira_Melayu_Tersenyum_Miring_Terang_Jauh_aug3.jpg",
+          "train/Melayu/Shafira_Melayu_Tersenyum_Miring_Terang_Jauh_aug4.jpg",
+          "train/Melayu/Shafira_Melayu_Tersenyum_Miring_Terang_Jauh_aug5.jpg"
+        ],
+        "metadata": {
+          "nama": "Shafira",
+          "suku": "Melayu",
+          "ekspresi": "Tersenyum",
+          "sudut": "Miring",
+          "pencahayaan": "Terang",
+          "jarak": "Jauh"
+        }
+      },
+      "train/Melayu/Shafira_Melayu_Tersenyum_Frontal_Terang_Dekat.jpg": {
+        "suku": "Melayu",
+        "split": "train",
+        "normalized": "normalized/train/Melayu/Shafira_Melayu_Tersenyum_Frontal_Terang_Dekat_normalized.jpg",
+        "face_detected": true,
+        "augmented_versions": [
+          "train/Melayu/Shafira_Melayu_Tersenyum_Frontal_Terang_Dekat_aug1.jpg",
+          "train/Melayu/Shafira_Melayu_Tersenyum_Frontal_Terang_Dekat_aug2.jpg",
+          "train/Melayu/Shafira_Melayu_Tersenyum_Frontal_Terang_Dekat_aug3.jpg",
+          "train/Melayu/Shafira_Melayu_Tersenyum_Frontal_Terang_Dekat_aug4.jpg",
+          "train/Melayu/Shafira_Melayu_Tersenyum_Frontal_Terang_Dekat_aug5.jpg"
+        ],
+        "metadata": {
+          "nama": "Shafira",
+          "suku": "Melayu",
+          "ekspresi": "Tersenyum",
+          "sudut": "Frontal",
+          "pencahayaan": "Terang",
+          "jarak": "Dekat"
+        }
+      },
+      "train/Melayu/Shafira_Melayu_Serius_Frontal_Redup_Dekat.jpg": {
+        "suku": "Melayu",
+        "split": "train",
+        "normalized": "normalized/train/Melayu/Shafira_Melayu_Serius_Frontal_Redup_Dekat_normalized.jpg",
+        "face_detected": true,
+        "augmented_versions": [
+          "train/Melayu/Shafira_Melayu_Serius_Frontal_Redup_Dekat_aug1.jpg",
+          "train/Melayu/Shafira_Melayu_Serius_Frontal_Redup_Dekat_aug2.jpg",
+          "train/Melayu/Shafira_Melayu_Serius_Frontal_Redup_Dekat_aug3.jpg",
+          "train/Melayu/Shafira_Melayu_Serius_Frontal_Redup_Dekat_aug4.jpg",
+          "train/Melayu/Shafira_Melayu_Serius_Frontal_Redup_Dekat_aug5.jpg"
+        ],
+        "metadata": {
+          "nama": "Shafira",
+          "suku": "Melayu",
+          "ekspresi": "Serius",
+          "sudut": "Frontal",
+          "pencahayaan": "Redup",
+          "jarak": "Dekat"
+        }
+      },
+      "train/Melayu/Namira_Melayu_Terkejut_Frontal_Redup_Dekat.jpg": {
+        "suku": "Melayu",
+        "split": "train",
+        "normalized": "normalized/train/Melayu/Namira_Melayu_Terkejut_Frontal_Redup_Dekat_normalized.jpg",
+        "face_detected": true,
+        "augmented_versions": [
+          "train/Melayu/Namira_Melayu_Terkejut_Frontal_Redup_Dekat_aug1.jpg",
+          "train/Melayu/Namira_Melayu_Terkejut_Frontal_Redup_Dekat_aug2.jpg",
+          "train/Melayu/Namira_Melayu_Terkejut_Frontal_Redup_Dekat_aug3.jpg",
+          "train/Melayu/Namira_Melayu_Terkejut_Frontal_Redup_Dekat_aug4.jpg",
+          "train/Melayu/Namira_Melayu_Terkejut_Frontal_Redup_Dekat_aug5.jpg"
+        ],
+        "metadata": {
+          "nama": "Namira",
+          "suku": "Melayu",
+          "ekspresi": "Terkejut",
+          "sudut": "Frontal",
+          "pencahayaan": "Redup",
+          "jarak": "Dekat"
+        }
+      },
+      "train/Melayu/Raihan_Sunda_Serius_Frontal_indoor.jpg": {
+        "suku": "Melayu",
+        "split": "train",
+        "normalized": "normalized/train/Melayu/Raihan_Sunda_Serius_Frontal_indoor_normalized.jpg",
+        "face_detected": true,
+        "augmented_versions": [
+          "train/Melayu/Raihan_Sunda_Serius_Frontal_indoor_aug1.jpg",
+          "train/Melayu/Raihan_Sunda_Serius_Frontal_indoor_aug2.jpg",
+          "train/Melayu/Raihan_Sunda_Serius_Frontal_indoor_aug3.jpg",
+          "train/Melayu/Raihan_Sunda_Serius_Frontal_indoor_aug4.jpg",
+          "train/Melayu/Raihan_Sunda_Serius_Frontal_indoor_aug5.jpg"
+        ],
+        "metadata": {
+          "nama": "Raihan",
+          "suku": "Sunda",
+          "ekspresi": "Serius",
+          "sudut": "Frontal",
+          "pencahayaan": "indoor",
+          "jarak": "unknown"
+        }
+      },
+      "train/Melayu/Raihan_Melayu_Terkejut_Frontal_Redup_Dekat.jpg": {
+        "suku": "Melayu",
+        "split": "train",
+        "normalized": "normalized/train/Melayu/Raihan_Melayu_Terkejut_Frontal_Redup_Dekat_normalized.jpg",
+        "face_detected": true,
+        "augmented_versions": [
+          "train/Melayu/Raihan_Melayu_Terkejut_Frontal_Redup_Dekat_aug1.jpg",
+          "train/Melayu/Raihan_Melayu_Terkejut_Frontal_Redup_Dekat_aug2.jpg",
+          "train/Melayu/Raihan_Melayu_Terkejut_Frontal_Redup_Dekat_aug3.jpg",
+          "train/Melayu/Raihan_Melayu_Terkejut_Frontal_Redup_Dekat_aug4.jpg",
+          "train/Melayu/Raihan_Melayu_Terkejut_Frontal_Redup_Dekat_aug5.jpg"
+        ],
+        "metadata": {
+          "nama": "Raihan",
+          "suku": "Melayu",
+          "ekspresi": "Terkejut",
+          "sudut": "Frontal",
+          "pencahayaan": "Redup",
+          "jarak": "Dekat"
+        }
+      },
+      "train/Melayu/Farrel_Melayu_Tersenyum_Frontal_Terang_Dekat.jpg": {
+        "suku": "Melayu",
+        "split": "train",
+        "normalized": "normalized/train/Melayu/Farrel_Melayu_Tersenyum_Frontal_Terang_Dekat_normalized.jpg",
+        "face_detected": true,
+        "augmented_versions": [
+          "train/Melayu/Farrel_Melayu_Tersenyum_Frontal_Terang_Dekat_aug1.jpg",
+          "train/Melayu/Farrel_Melayu_Tersenyum_Frontal_Terang_Dekat_aug2.jpg",
+          "train/Melayu/Farrel_Melayu_Tersenyum_Frontal_Terang_Dekat_aug3.jpg",
+          "train/Melayu/Farrel_Melayu_Tersenyum_Frontal_Terang_Dekat_aug4.jpg",
+          "train/Melayu/Farrel_Melayu_Tersenyum_Frontal_Terang_Dekat_aug5.jpg"
+        ],
+        "metadata": {
+          "nama": "Farrel",
+          "suku": "Melayu",
+          "ekspresi": "Tersenyum",
+          "sudut": "Frontal",
+          "pencahayaan": "Terang",
+          "jarak": "Dekat"
+        }
+      },
+      "train/Melayu/Raihan_Melayu_Serius_Miring_Redup_Jauh.jpg": {
+        "suku": "Melayu",
+        "split": "train",
+        "normalized": "normalized/train/Melayu/Raihan_Melayu_Serius_Miring_Redup_Jauh_normalized.jpg",
+        "face_detected": true,
+        "augmented_versions": [
+          "train/Melayu/Raihan_Melayu_Serius_Miring_Redup_Jauh_aug1.jpg",
+          "train/Melayu/Raihan_Melayu_Serius_Miring_Redup_Jauh_aug2.jpg",
+          "train/Melayu/Raihan_Melayu_Serius_Miring_Redup_Jauh_aug3.jpg",
+          "train/Melayu/Raihan_Melayu_Serius_Miring_Redup_Jauh_aug4.jpg",
+          "train/Melayu/Raihan_Melayu_Serius_Miring_Redup_Jauh_aug5.jpg"
+        ],
+        "metadata": {
+          "nama": "Raihan",
+          "suku": "Melayu",
+          "ekspresi": "Serius",
+          "sudut": "Miring",
+          "pencahayaan": "Redup",
+          "jarak": "Jauh"
+        }
+      },
+      "train/Melayu/Farrel_Melayu_Serius_Frontal_Dekat.jpg": {
+        "suku": "Melayu",
+        "split": "train",
+        "normalized": "normalized/train/Melayu/Farrel_Melayu_Serius_Frontal_Dekat_normalized.jpg",
+        "face_detected": true,
+        "augmented_versions": [
+          "train/Melayu/Farrel_Melayu_Serius_Frontal_Dekat_aug1.jpg",
+          "train/Melayu/Farrel_Melayu_Serius_Frontal_Dekat_aug2.jpg",
+          "train/Melayu/Farrel_Melayu_Serius_Frontal_Dekat_aug3.jpg",
+          "train/Melayu/Farrel_Melayu_Serius_Frontal_Dekat_aug4.jpg",
+          "train/Melayu/Farrel_Melayu_Serius_Frontal_Dekat_aug5.jpg"
+        ],
+        "metadata": {
+          "nama": "Farrel",
+          "suku": "Melayu",
+          "ekspresi": "Serius",
+          "sudut": "Frontal",
+          "pencahayaan": "Dekat",
+          "jarak": "unknown"
+        }
+      },
+      "train/Jawa/Nazla_Jawa_Serius_Miring_Redup_Jauh.jpg": {
+        "suku": "Jawa",
+        "split": "train",
+        "normalized": "normalized/train/Jawa/Nazla_Jawa_Serius_Miring_Redup_Jauh_normalized.jpg",
+        "face_detected": true,
+        "augmented_versions": [
+          "train/Jawa/Nazla_Jawa_Serius_Miring_Redup_Jauh_aug1.jpg",
+          "train/Jawa/Nazla_Jawa_Serius_Miring_Redup_Jauh_aug2.jpg",
+          "train/Jawa/Nazla_Jawa_Serius_Miring_Redup_Jauh_aug3.jpg",
+          "train/Jawa/Nazla_Jawa_Serius_Miring_Redup_Jauh_aug4.jpg",
+          "train/Jawa/Nazla_Jawa_Serius_Miring_Redup_Jauh_aug5.jpg"
+        ],
+        "metadata": {
+          "nama": "Nazla",
+          "suku": "Jawa",
+          "ekspresi": "Serius",
+          "sudut": "Miring",
+          "pencahayaan": "Redup",
+          "jarak": "Jauh"
+        }
+      },
+      "train/Jawa/Desi_Jawa_Tersenyum_Frontal_Terang_Dekat.jpg": {
+        "suku": "Jawa",
+        "split": "train",
+        "normalized": "normalized/train/Jawa/Desi_Jawa_Tersenyum_Frontal_Terang_Dekat_normalized.jpg",
+        "face_detected": true,
+        "augmented_versions": [
+          "train/Jawa/Desi_Jawa_Tersenyum_Frontal_Terang_Dekat_aug1.jpg",
+          "train/Jawa/Desi_Jawa_Tersenyum_Frontal_Terang_Dekat_aug2.jpg",
+          "train/Jawa/Desi_Jawa_Tersenyum_Frontal_Terang_Dekat_aug3.jpg",
+          "train/Jawa/Desi_Jawa_Tersenyum_Frontal_Terang_Dekat_aug4.jpg",
+          "train/Jawa/Desi_Jawa_Tersenyum_Frontal_Terang_Dekat_aug5.jpg"
+        ],
+        "metadata": {
+          "nama": "Desi",
+          "suku": "Jawa",
+          "ekspresi": "Tersenyum",
+          "sudut": "Frontal",
+          "pencahayaan": "Terang",
+          "jarak": "Dekat"
+        }
+      },
+      "train/Jawa/Rakha_Jawa_Tersenyum_Miring_Terang_Jauh.jpg": {
+        "suku": "Jawa",
+        "split": "train",
+        "normalized": "normalized/train/Jawa/Rakha_Jawa_Tersenyum_Miring_Terang_Jauh_normalized.jpg",
+        "face_detected": true,
+        "augmented_versions": [
+          "train/Jawa/Rakha_Jawa_Tersenyum_Miring_Terang_Jauh_aug1.jpg",
+          "train/Jawa/Rakha_Jawa_Tersenyum_Miring_Terang_Jauh_aug2.jpg",
+          "train/Jawa/Rakha_Jawa_Tersenyum_Miring_Terang_Jauh_aug3.jpg",
+          "train/Jawa/Rakha_Jawa_Tersenyum_Miring_Terang_Jauh_aug4.jpg",
+          "train/Jawa/Rakha_Jawa_Tersenyum_Miring_Terang_Jauh_aug5.jpg"
+        ],
+        "metadata": {
+          "nama": "Rakha",
+          "suku": "Jawa",
+          "ekspresi": "Tersenyum",
+          "sudut": "Miring",
+          "pencahayaan": "Terang",
+          "jarak": "Jauh"
+        }
+      },
+      "train/Jawa/Desi_Jawa_Terkejut_Frontal_Redup_Dekat.jpg": {
+        "suku": "Jawa",
+        "split": "train",
+        "normalized": "normalized/train/Jawa/Desi_Jawa_Terkejut_Frontal_Redup_Dekat_normalized.jpg",
+        "face_detected": true,
+        "augmented_versions": [
+          "train/Jawa/Desi_Jawa_Terkejut_Frontal_Redup_Dekat_aug1.jpg",
+          "train/Jawa/Desi_Jawa_Terkejut_Frontal_Redup_Dekat_aug2.jpg",
+          "train/Jawa/Desi_Jawa_Terkejut_Frontal_Redup_Dekat_aug3.jpg",
+          "train/Jawa/Desi_Jawa_Terkejut_Frontal_Redup_Dekat_aug4.jpg",
+          "train/Jawa/Desi_Jawa_Terkejut_Frontal_Redup_Dekat_aug5.jpg"
+        ],
+        "metadata": {
+          "nama": "Desi",
+          "suku": "Jawa",
+          "ekspresi": "Terkejut",
+          "sudut": "Frontal",
+          "pencahayaan": "Redup",
+          "jarak": "Dekat"
+        }
+      },
+      "train/Jawa/Febytha_Jawa_Tersenyum_Frontal_Terang_Dekat.jpg": {
+        "suku": "Jawa",
+        "split": "train",
+        "normalized": "normalized/train/Jawa/Febytha_Jawa_Tersenyum_Frontal_Terang_Dekat_normalized.jpg",
+        "face_detected": true,
+        "augmented_versions": [
+          "train/Jawa/Febytha_Jawa_Tersenyum_Frontal_Terang_Dekat_aug1.jpg",
+          "train/Jawa/Febytha_Jawa_Tersenyum_Frontal_Terang_Dekat_aug2.jpg",
+          "train/Jawa/Febytha_Jawa_Tersenyum_Frontal_Terang_Dekat_aug3.jpg",
+          "train/Jawa/Febytha_Jawa_Tersenyum_Frontal_Terang_Dekat_aug4.jpg",
+          "train/Jawa/Febytha_Jawa_Tersenyum_Frontal_Terang_Dekat_aug5.jpg"
+        ],
+        "metadata": {
+          "nama": "Febytha",
+          "suku": "Jawa",
+          "ekspresi": "Tersenyum",
+          "sudut": "Frontal",
+          "pencahayaan": "Terang",
+          "jarak": "Dekat"
+        }
+      },
+      "train/Jawa/Nazla_Jawa_Terkejut_Frontal_Redup_Dekat.jpg": {
+        "suku": "Jawa",
+        "split": "train",
+        "normalized": "normalized/train/Jawa/Nazla_Jawa_Terkejut_Frontal_Redup_Dekat_normalized.jpg",
+        "face_detected": true,
+        "augmented_versions": [
+          "train/Jawa/Nazla_Jawa_Terkejut_Frontal_Redup_Dekat_aug1.jpg",
+          "train/Jawa/Nazla_Jawa_Terkejut_Frontal_Redup_Dekat_aug2.jpg",
+          "train/Jawa/Nazla_Jawa_Terkejut_Frontal_Redup_Dekat_aug3.jpg",
+          "train/Jawa/Nazla_Jawa_Terkejut_Frontal_Redup_Dekat_aug4.jpg",
+          "train/Jawa/Nazla_Jawa_Terkejut_Frontal_Redup_Dekat_aug5.jpg"
+        ],
+        "metadata": {
+          "nama": "Nazla",
+          "suku": "Jawa",
+          "ekspresi": "Terkejut",
+          "sudut": "Frontal",
+          "pencahayaan": "Redup",
+          "jarak": "Dekat"
+        }
+      },
+      "train/Jawa/Rakha_Jawa_Tersenyum_Frontal_Terang_Dekat.jpg": {
+        "suku": "Jawa",
+        "split": "train",
+        "normalized": "normalized/train/Jawa/Rakha_Jawa_Tersenyum_Frontal_Terang_Dekat_normalized.jpg",
+        "face_detected": true,
+        "augmented_versions": [
+          "train/Jawa/Rakha_Jawa_Tersenyum_Frontal_Terang_Dekat_aug1.jpg",
+          "train/Jawa/Rakha_Jawa_Tersenyum_Frontal_Terang_Dekat_aug2.jpg",
+          "train/Jawa/Rakha_Jawa_Tersenyum_Frontal_Terang_Dekat_aug3.jpg",
+          "train/Jawa/Rakha_Jawa_Tersenyum_Frontal_Terang_Dekat_aug4.jpg",
+          "train/Jawa/Rakha_Jawa_Tersenyum_Frontal_Terang_Dekat_aug5.jpg"
+        ],
+        "metadata": {
+          "nama": "Rakha",
+          "suku": "Jawa",
+          "ekspresi": "Tersenyum",
+          "sudut": "Frontal",
+          "pencahayaan": "Terang",
+          "jarak": "Dekat"
+        }
+      },
+      "train/Jawa/Nazla_Jawa_Tersenyum_Miring_Terang_Jauh.jpg": {
+        "suku": "Jawa",
+        "split": "train",
+        "normalized": "normalized/train/Jawa/Nazla_Jawa_Tersenyum_Miring_Terang_Jauh_normalized.jpg",
+        "face_detected": true,
+        "augmented_versions": [
+          "train/Jawa/Nazla_Jawa_Tersenyum_Miring_Terang_Jauh_aug1.jpg",
+          "train/Jawa/Nazla_Jawa_Tersenyum_Miring_Terang_Jauh_aug2.jpg",
+          "train/Jawa/Nazla_Jawa_Tersenyum_Miring_Terang_Jauh_aug3.jpg",
+          "train/Jawa/Nazla_Jawa_Tersenyum_Miring_Terang_Jauh_aug4.jpg",
+          "train/Jawa/Nazla_Jawa_Tersenyum_Miring_Terang_Jauh_aug5.jpg"
+        ],
+        "metadata": {
+          "nama": "Nazla",
+          "suku": "Jawa",
+          "ekspresi": "Tersenyum",
+          "sudut": "Miring",
+          "pencahayaan": "Terang",
+          "jarak": "Jauh"
+        }
+      },
+      "train/Sunda/Diva_Sunda_Terkejut_Frontal_Redup_Dekat.jpg": {
+        "suku": "Sunda",
+        "split": "train",
+        "normalized": "normalized/train/Sunda/Diva_Sunda_Terkejut_Frontal_Redup_Dekat_normalized.jpg",
+        "face_detected": true,
+        "augmented_versions": [
+          "train/Sunda/Diva_Sunda_Terkejut_Frontal_Redup_Dekat_aug1.jpg",
+          "train/Sunda/Diva_Sunda_Terkejut_Frontal_Redup_Dekat_aug2.jpg",
+          "train/Sunda/Diva_Sunda_Terkejut_Frontal_Redup_Dekat_aug3.jpg",
+          "train/Sunda/Diva_Sunda_Terkejut_Frontal_Redup_Dekat_aug4.jpg",
+          "train/Sunda/Diva_Sunda_Terkejut_Frontal_Redup_Dekat_aug5.jpg"
+        ],
+        "metadata": {
+          "nama": "Diva",
+          "suku": "Sunda",
+          "ekspresi": "Terkejut",
+          "sudut": "Frontal",
+          "pencahayaan": "Redup",
+          "jarak": "Dekat"
+        }
+      },
+      "train/Sunda/Indah_Sunda_Terkejut_Frontal_Redup_Dekat.jpg": {
+        "suku": "Sunda",
+        "split": "train",
+        "normalized": "normalized/train/Sunda/Indah_Sunda_Terkejut_Frontal_Redup_Dekat_normalized.jpg",
+        "face_detected": true,
+        "augmented_versions": [
+          "train/Sunda/Indah_Sunda_Terkejut_Frontal_Redup_Dekat_aug1.jpg",
+          "train/Sunda/Indah_Sunda_Terkejut_Frontal_Redup_Dekat_aug2.jpg",
+          "train/Sunda/Indah_Sunda_Terkejut_Frontal_Redup_Dekat_aug3.jpg",
+          "train/Sunda/Indah_Sunda_Terkejut_Frontal_Redup_Dekat_aug4.jpg",
+          "train/Sunda/Indah_Sunda_Terkejut_Frontal_Redup_Dekat_aug5.jpg"
+        ],
+        "metadata": {
+          "nama": "Indah",
+          "suku": "Sunda",
+          "ekspresi": "Terkejut",
+          "sudut": "Frontal",
+          "pencahayaan": "Redup",
+          "jarak": "Dekat"
+        }
+      },
+      "train/Sunda/Daffa_Sunda_Tersenyum_Frontal_Terang_Dekat.jpg": {
+        "suku": "Sunda",
+        "split": "train",
+        "normalized": "normalized/train/Sunda/Daffa_Sunda_Tersenyum_Frontal_Terang_Dekat_normalized.jpg",
+        "face_detected": true,
+        "augmented_versions": [
+          "train/Sunda/Daffa_Sunda_Tersenyum_Frontal_Terang_Dekat_aug1.jpg",
+          "train/Sunda/Daffa_Sunda_Tersenyum_Frontal_Terang_Dekat_aug2.jpg",
+          "train/Sunda/Daffa_Sunda_Tersenyum_Frontal_Terang_Dekat_aug3.jpg",
+          "train/Sunda/Daffa_Sunda_Tersenyum_Frontal_Terang_Dekat_aug4.jpg",
+          "train/Sunda/Daffa_Sunda_Tersenyum_Frontal_Terang_Dekat_aug5.jpg"
+        ],
+        "metadata": {
+          "nama": "Daffa",
+          "suku": "Sunda",
+          "ekspresi": "Tersenyum",
+          "sudut": "Frontal",
+          "pencahayaan": "Terang",
+          "jarak": "Dekat"
+        }
+      },
+      "train/Sunda/Fanza_Sunda_Serius_Frontal_Terang_Dekat.jpeg": {
+        "suku": "Sunda",
+        "split": "train",
+        "normalized": "normalized/train/Sunda/Fanza_Sunda_Serius_Frontal_Terang_Dekat_normalized.jpeg",
+        "face_detected": true,
+        "augmented_versions": [
+          "train/Sunda/Fanza_Sunda_Serius_Frontal_Terang_Dekat_aug1.jpeg",
+          "train/Sunda/Fanza_Sunda_Serius_Frontal_Terang_Dekat_aug2.jpeg",
+          "train/Sunda/Fanza_Sunda_Serius_Frontal_Terang_Dekat_aug3.jpeg",
+          "train/Sunda/Fanza_Sunda_Serius_Frontal_Terang_Dekat_aug4.jpeg",
+          "train/Sunda/Fanza_Sunda_Serius_Frontal_Terang_Dekat_aug5.jpeg"
+        ],
+        "metadata": {
+          "nama": "Fanza",
+          "suku": "Sunda",
+          "ekspresi": "Serius",
+          "sudut": "Frontal",
+          "pencahayaan": "Terang",
+          "jarak": "Dekat"
+        }
+      },
+      "train/Sunda/Daffa_Sunda_Tersenyum_Miring_Terang_Jauh.jpg": {
+        "suku": "Sunda",
+        "split": "train",
+        "normalized": "normalized/train/Sunda/Daffa_Sunda_Tersenyum_Miring_Terang_Jauh_normalized.jpg",
+        "face_detected": true,
+        "augmented_versions": [
+          "train/Sunda/Daffa_Sunda_Tersenyum_Miring_Terang_Jauh_aug1.jpg",
+          "train/Sunda/Daffa_Sunda_Tersenyum_Miring_Terang_Jauh_aug2.jpg",
+          "train/Sunda/Daffa_Sunda_Tersenyum_Miring_Terang_Jauh_aug3.jpg",
+          "train/Sunda/Daffa_Sunda_Tersenyum_Miring_Terang_Jauh_aug4.jpg",
+          "train/Sunda/Daffa_Sunda_Tersenyum_Miring_Terang_Jauh_aug5.jpg"
+        ],
+        "metadata": {
+          "nama": "Daffa",
+          "suku": "Sunda",
+          "ekspresi": "Tersenyum",
+          "sudut": "Miring",
+          "pencahayaan": "Terang",
+          "jarak": "Jauh"
+        }
+      },
+      "train/Sunda/Indah_Sunda_Tersenyum_Miring_Terang_Jauh.jpg": {
+        "suku": "Sunda",
+        "split": "train",
+        "normalized": "normalized/train/Sunda/Indah_Sunda_Tersenyum_Miring_Terang_Jauh_normalized.jpg",
+        "face_detected": true,
+        "augmented_versions": [
+          "train/Sunda/Indah_Sunda_Tersenyum_Miring_Terang_Jauh_aug1.jpg",
+          "train/Sunda/Indah_Sunda_Tersenyum_Miring_Terang_Jauh_aug2.jpg",
+          "train/Sunda/Indah_Sunda_Tersenyum_Miring_Terang_Jauh_aug3.jpg",
+          "train/Sunda/Indah_Sunda_Tersenyum_Miring_Terang_Jauh_aug4.jpg",
+          "train/Sunda/Indah_Sunda_Tersenyum_Miring_Terang_Jauh_aug5.jpg"
+        ],
+        "metadata": {
+          "nama": "Indah",
+          "suku": "Sunda",
+          "ekspresi": "Tersenyum",
+          "sudut": "Miring",
+          "pencahayaan": "Terang",
+          "jarak": "Jauh"
+        }
+      },
+      "train/Sunda/Diva_Sunda_Tersenyum_Miring_Terang_Jauh.jpg": {
+        "suku": "Sunda",
+        "split": "train",
+        "normalized": "normalized/train/Sunda/Diva_Sunda_Tersenyum_Miring_Terang_Jauh_normalized.jpg",
+        "face_detected": true,
+        "augmented_versions": [
+          "train/Sunda/Diva_Sunda_Tersenyum_Miring_Terang_Jauh_aug1.jpg",
+          "train/Sunda/Diva_Sunda_Tersenyum_Miring_Terang_Jauh_aug2.jpg",
+          "train/Sunda/Diva_Sunda_Tersenyum_Miring_Terang_Jauh_aug3.jpg",
+          "train/Sunda/Diva_Sunda_Tersenyum_Miring_Terang_Jauh_aug4.jpg",
+          "train/Sunda/Diva_Sunda_Tersenyum_Miring_Terang_Jauh_aug5.jpg"
+        ],
+        "metadata": {
+          "nama": "Diva",
+          "suku": "Sunda",
+          "ekspresi": "Tersenyum",
+          "sudut": "Miring",
+          "pencahayaan": "Terang",
+          "jarak": "Jauh"
+        }
+      },
+      "train/Sunda/Farhan_Sunda_Serius_Miring_Redup_Jauh.jpeg": {
+        "suku": "Sunda",
+        "split": "train",
+        "normalized": "normalized/train/Sunda/Farhan_Sunda_Serius_Miring_Redup_Jauh_normalized.jpeg",
+        "face_detected": true,
+        "augmented_versions": [
+          "train/Sunda/Farhan_Sunda_Serius_Miring_Redup_Jauh_aug1.jpeg",
+          "train/Sunda/Farhan_Sunda_Serius_Miring_Redup_Jauh_aug2.jpeg",
+          "train/Sunda/Farhan_Sunda_Serius_Miring_Redup_Jauh_aug3.jpeg",
+          "train/Sunda/Farhan_Sunda_Serius_Miring_Redup_Jauh_aug4.jpeg",
+          "train/Sunda/Farhan_Sunda_Serius_Miring_Redup_Jauh_aug5.jpeg"
+        ],
+        "metadata": {
+          "nama": "Farhan",
+          "suku": "Sunda",
+          "ekspresi": "Serius",
+          "sudut": "Miring",
+          "pencahayaan": "Redup",
+          "jarak": "Jauh"
+        }
+      },
+      "train/Sunda/Indah_Sunda_Tersenyum_Frontal_Terang_Dekat.jpg": {
+        "suku": "Sunda",
+        "split": "train",
+        "normalized": "normalized/train/Sunda/Indah_Sunda_Tersenyum_Frontal_Terang_Dekat_normalized.jpg",
+        "face_detected": true,
+        "augmented_versions": [
+          "train/Sunda/Indah_Sunda_Tersenyum_Frontal_Terang_Dekat_aug1.jpg",
+          "train/Sunda/Indah_Sunda_Tersenyum_Frontal_Terang_Dekat_aug2.jpg",
+          "train/Sunda/Indah_Sunda_Tersenyum_Frontal_Terang_Dekat_aug3.jpg",
+          "train/Sunda/Indah_Sunda_Tersenyum_Frontal_Terang_Dekat_aug4.jpg",
+          "train/Sunda/Indah_Sunda_Tersenyum_Frontal_Terang_Dekat_aug5.jpg"
+        ],
+        "metadata": {
+          "nama": "Indah",
+          "suku": "Sunda",
+          "ekspresi": "Tersenyum",
+          "sudut": "Frontal",
+          "pencahayaan": "Terang",
+          "jarak": "Dekat"
+        }
+      },
+      "train/Sunda/Indah_Sunda_Serius_Miring_Redup_Jauh.jpg": {
+        "suku": "Sunda",
+        "split": "train",
+        "normalized": "normalized/train/Sunda/Indah_Sunda_Serius_Miring_Redup_Jauh_normalized.jpg",
+        "face_detected": true,
+        "augmented_versions": [
+          "train/Sunda/Indah_Sunda_Serius_Miring_Redup_Jauh_aug1.jpg",
+          "train/Sunda/Indah_Sunda_Serius_Miring_Redup_Jauh_aug2.jpg",
+          "train/Sunda/Indah_Sunda_Serius_Miring_Redup_Jauh_aug3.jpg",
+          "train/Sunda/Indah_Sunda_Serius_Miring_Redup_Jauh_aug4.jpg",
+          "train/Sunda/Indah_Sunda_Serius_Miring_Redup_Jauh_aug5.jpg"
+        ],
+        "metadata": {
+          "nama": "Indah",
+          "suku": "Sunda",
+          "ekspresi": "Serius",
+          "sudut": "Miring",
+          "pencahayaan": "Redup",
+          "jarak": "Jauh"
+        }
+      },
+      "train/Sunda/Diva_Sunda_Tersenyum_Frontal_Terang_Dekat.jpg": {
+        "suku": "Sunda",
+        "split": "train",
+        "normalized": "normalized/train/Sunda/Diva_Sunda_Tersenyum_Frontal_Terang_Dekat_normalized.jpg",
+        "face_detected": true,
+        "augmented_versions": [
+          "train/Sunda/Diva_Sunda_Tersenyum_Frontal_Terang_Dekat_aug1.jpg",
+          "train/Sunda/Diva_Sunda_Tersenyum_Frontal_Terang_Dekat_aug2.jpg",
+          "train/Sunda/Diva_Sunda_Tersenyum_Frontal_Terang_Dekat_aug3.jpg",
+          "train/Sunda/Diva_Sunda_Tersenyum_Frontal_Terang_Dekat_aug4.jpg",
+          "train/Sunda/Diva_Sunda_Tersenyum_Frontal_Terang_Dekat_aug5.jpg"
+        ],
+        "metadata": {
+          "nama": "Diva",
+          "suku": "Sunda",
+          "ekspresi": "Tersenyum",
+          "sudut": "Frontal",
+          "pencahayaan": "Terang",
+          "jarak": "Dekat"
+        }
+      },
+      "train/Sunda/Fanza_Sunda_Serius_Miring_Redup_Jauh.jpg": {
+        "suku": "Sunda",
+        "split": "train",
+        "normalized": "normalized/train/Sunda/Fanza_Sunda_Serius_Miring_Redup_Jauh_normalized.jpg",
+        "face_detected": true,
+        "augmented_versions": [
+          "train/Sunda/Fanza_Sunda_Serius_Miring_Redup_Jauh_aug1.jpg",
+          "train/Sunda/Fanza_Sunda_Serius_Miring_Redup_Jauh_aug2.jpg",
+          "train/Sunda/Fanza_Sunda_Serius_Miring_Redup_Jauh_aug3.jpg",
+          "train/Sunda/Fanza_Sunda_Serius_Miring_Redup_Jauh_aug4.jpg",
+          "train/Sunda/Fanza_Sunda_Serius_Miring_Redup_Jauh_aug5.jpg"
+        ],
+        "metadata": {
+          "nama": "Fanza",
+          "suku": "Sunda",
+          "ekspresi": "Serius",
+          "sudut": "Miring",
+          "pencahayaan": "Redup",
+          "jarak": "Jauh"
+        }
+      },
+      "train/Sunda/Farhan_Sunda_Tersenyum_Frontal_Terang_Dekat.jpeg": {
+        "suku": "Sunda",
+        "split": "train",
+        "normalized": "normalized/train/Sunda/Farhan_Sunda_Tersenyum_Frontal_Terang_Dekat_normalized.jpeg",
+        "face_detected": true,
+        "augmented_versions": [
+          "train/Sunda/Farhan_Sunda_Tersenyum_Frontal_Terang_Dekat_aug1.jpeg",
+          "train/Sunda/Farhan_Sunda_Tersenyum_Frontal_Terang_Dekat_aug2.jpeg",
+          "train/Sunda/Farhan_Sunda_Tersenyum_Frontal_Terang_Dekat_aug3.jpeg",
+          "train/Sunda/Farhan_Sunda_Tersenyum_Frontal_Terang_Dekat_aug4.jpeg",
+          "train/Sunda/Farhan_Sunda_Tersenyum_Frontal_Terang_Dekat_aug5.jpeg"
+        ],
+        "metadata": {
+          "nama": "Farhan",
+          "suku": "Sunda",
+          "ekspresi": "Tersenyum",
+          "sudut": "Frontal",
+          "pencahayaan": "Terang",
+          "jarak": "Dekat"
+        }
+      },
+      "train/Sunda/Farhan_Sunda_Terkejut_Frontal_Redup_Dekat.jpg": {
+        "suku": "Sunda",
+        "split": "train",
+        "normalized": "normalized/train/Sunda/Farhan_Sunda_Terkejut_Frontal_Redup_Dekat_normalized.jpg",
+        "face_detected": true,
+        "augmented_versions": [
+          "train/Sunda/Farhan_Sunda_Terkejut_Frontal_Redup_Dekat_aug1.jpg",
+          "train/Sunda/Farhan_Sunda_Terkejut_Frontal_Redup_Dekat_aug2.jpg",
+          "train/Sunda/Farhan_Sunda_Terkejut_Frontal_Redup_Dekat_aug3.jpg",
+          "train/Sunda/Farhan_Sunda_Terkejut_Frontal_Redup_Dekat_aug4.jpg",
+          "train/Sunda/Farhan_Sunda_Terkejut_Frontal_Redup_Dekat_aug5.jpg"
+        ],
+        "metadata": {
+          "nama": "Farhan",
+          "suku": "Sunda",
+          "ekspresi": "Terkejut",
+          "sudut": "Frontal",
+          "pencahayaan": "Redup",
+          "jarak": "Dekat"
+        }
+      },
+      "validation/Melayu/Shafira_Melayu_Serius_Miring_Redup_Jauh.jpg": {
+        "suku": "Melayu",
+        "split": "validation",
+        "normalized": "normalized/validation/Melayu/Shafira_Melayu_Serius_Miring_Redup_Jauh_normalized.jpg",
         "face_detected": false,
-        "augmented_versions": [
-          "train/Melayu/Shafira_Melayu_Datar_Kiri_aug1.PNG",
-          "train/Melayu/Shafira_Melayu_Datar_Kiri_aug2.PNG"
-        ]
+        "augmented_versions": [],
+        "metadata": {
+          "nama": "Shafira",
+          "suku": "Melayu",
+          "ekspresi": "Serius",
+          "sudut": "Miring",
+          "pencahayaan": "Redup",
+          "jarak": "Jauh"
+        }
       },
-      "train/Sunda/Fanza_Sunda_Senyum_Kiri.jpeg": {
-        "suku": "Sunda",
-        "split": "train",
-        "normalized": "normalized/train/Sunda/Fanza_Sunda_Senyum_Kiri_normalized.jpeg",
+      "validation/Melayu/Namira_Melayu_Serius_Miring_Redup_Jauh.jpg": {
+        "suku": "Melayu",
+        "split": "validation",
+        "normalized": "normalized/validation/Melayu/Namira_Melayu_Serius_Miring_Redup_Jauh_normalized.jpg",
         "face_detected": true,
-        "augmented_versions": [
-          "train/Sunda/Fanza_Sunda_Senyum_Kiri_aug1.jpeg",
-          "train/Sunda/Fanza_Sunda_Senyum_Kiri_aug2.jpeg"
-        ]
+        "augmented_versions": [],
+        "metadata": {
+          "nama": "Namira",
+          "suku": "Melayu",
+          "ekspresi": "Serius",
+          "sudut": "Miring",
+          "pencahayaan": "Redup",
+          "jarak": "Jauh"
+        }
       },
-      "train/Sunda/Fanza_Sunda_Datar_Kanan.jpeg": {
-        "suku": "Sunda",
-        "split": "train",
-        "normalized": "normalized/train/Sunda/Fanza_Sunda_Datar_Kanan_normalized.jpeg",
+      "validation/Melayu/Farrel_Melayu_Terkejut_Frontal_Redup_Dekat.jpg": {
+        "suku": "Melayu",
+        "split": "validation",
+        "normalized": "normalized/validation/Melayu/Farrel_Melayu_Terkejut_Frontal_Redup_Dekat_normalized.jpg",
         "face_detected": true,
-        "augmented_versions": [
-          "train/Sunda/Fanza_Sunda_Datar_Kanan_aug1.jpeg",
-          "train/Sunda/Fanza_Sunda_Datar_Kanan_aug2.jpeg"
-        ]
+        "augmented_versions": [],
+        "metadata": {
+          "nama": "Farrel",
+          "suku": "Melayu",
+          "ekspresi": "Terkejut",
+          "sudut": "Frontal",
+          "pencahayaan": "Redup",
+          "jarak": "Dekat"
+        }
       },
-      "train/Sunda/Fanza_Sunda_Senyum_Kanan.jpeg": {
-        "suku": "Sunda",
-        "split": "train",
-        "normalized": "normalized/train/Sunda/Fanza_Sunda_Senyum_Kanan_normalized.jpeg",
+      "validation/Jawa/Desi_Jawa_Tersenyum_Miring_Terang_Jauh.jpg": {
+        "suku": "Jawa",
+        "split": "validation",
+        "normalized": "normalized/validation/Jawa/Desi_Jawa_Tersenyum_Miring_Terang_Jauh_normalized.jpg",
         "face_detected": true,
-        "augmented_versions": [
-          "train/Sunda/Fanza_Sunda_Senyum_Kanan_aug1.jpeg",
-          "train/Sunda/Fanza_Sunda_Senyum_Kanan_aug2.jpeg"
-        ]
+        "augmented_versions": [],
+        "metadata": {
+          "nama": "Desi",
+          "suku": "Jawa",
+          "ekspresi": "Tersenyum",
+          "sudut": "Miring",
+          "pencahayaan": "Terang",
+          "jarak": "Jauh"
+        }
       },
-      "train/Sunda/Fanza_Sunda_Datar_Kiri.jpeg": {
+      "validation/Jawa/Nazla_Jawa_Tersenyum_Frontal_Terang_Dekat.jpg": {
+        "suku": "Jawa",
+        "split": "validation",
+        "normalized": "normalized/validation/Jawa/Nazla_Jawa_Tersenyum_Frontal_Terang_Dekat_normalized.jpg",
+        "face_detected": true,
+        "augmented_versions": [],
+        "metadata": {
+          "nama": "Nazla",
+          "suku": "Jawa",
+          "ekspresi": "Tersenyum",
+          "sudut": "Frontal",
+          "pencahayaan": "Terang",
+          "jarak": "Dekat"
+        }
+      },
+      "validation/Sunda/Daffa_Sunda_Serius_Miring_Redup_Jauh.jpg": {
         "suku": "Sunda",
-        "split": "train",
-        "normalized": "normalized/train/Sunda/Fanza_Sunda_Datar_Kiri_normalized.jpeg",
-        "face_detected": false,
-        "augmented_versions": [
-          "train/Sunda/Fanza_Sunda_Datar_Kiri_aug1.jpeg",
-          "train/Sunda/Fanza_Sunda_Datar_Kiri_aug2.jpeg"
-        ]
+        "split": "validation",
+        "normalized": "normalized/validation/Sunda/Daffa_Sunda_Serius_Miring_Redup_Jauh_normalized.jpg",
+        "face_detected": true,
+        "augmented_versions": [],
+        "metadata": {
+          "nama": "Daffa",
+          "suku": "Sunda",
+          "ekspresi": "Serius",
+          "sudut": "Miring",
+          "pencahayaan": "Redup",
+          "jarak": "Jauh"
+        }
       },
-      "test/Jawa/Nazla_Jawa_Kaget_Depan.JPG": {
+      "validation/Sunda/Farhan_Sunda_Tersenyum_Miring_Terang_Jauh.jpeg": {
+        "suku": "Sunda",
+        "split": "validation",
+        "normalized": "normalized/validation/Sunda/Farhan_Sunda_Tersenyum_Miring_Terang_Jauh_normalized.jpeg",
+        "face_detected": true,
+        "augmented_versions": [],
+        "metadata": {
+          "nama": "Farhan",
+          "suku": "Sunda",
+          "ekspresi": "Tersenyum",
+          "sudut": "Miring",
+          "pencahayaan": "Terang",
+          "jarak": "Jauh"
+        }
+      },
+      "validation/Sunda/Fanza_Sunda_Serius.jpg": {
+        "suku": "Sunda",
+        "split": "validation",
+        "normalized": "normalized/validation/Sunda/Fanza_Sunda_Serius_normalized.jpg",
+        "face_detected": true,
+        "augmented_versions": [],
+        "metadata": {
+          "nama": "Fanza",
+          "suku": "Sunda",
+          "ekspresi": "Serius",
+          "sudut": "unknown",
+          "pencahayaan": "unknown",
+          "jarak": "unknown"
+        }
+      },
+      "test/Melayu/Raihan_Tersenyum_Miring_Terang_Jauh.jpg": {
+        "suku": "Melayu",
+        "split": "test",
+        "normalized": "normalized/test/Melayu/Raihan_Tersenyum_Miring_Terang_Jauh_normalized.jpg",
+        "face_detected": true,
+        "augmented_versions": [],
+        "metadata": {
+          "nama": "Raihan",
+          "suku": "Tersenyum",
+          "ekspresi": "Miring",
+          "sudut": "Terang",
+          "pencahayaan": "Jauh",
+          "jarak": "unknown"
+        }
+      },
+      "test/Melayu/Raihan_Melayu_Tersenyum_Frontal_Terang_Dekat.jpg": {
+        "suku": "Melayu",
+        "split": "test",
+        "normalized": "normalized/test/Melayu/Raihan_Melayu_Tersenyum_Frontal_Terang_Dekat_normalized.jpg",
+        "face_detected": true,
+        "augmented_versions": [],
+        "metadata": {
+          "nama": "Raihan",
+          "suku": "Melayu",
+          "ekspresi": "Tersenyum",
+          "sudut": "Frontal",
+          "pencahayaan": "Terang",
+          "jarak": "Dekat"
+        }
+      },
+      "test/Melayu/Farrel_Melayu_Tersenyum_Miring_Terang_Jauh.jpg": {
+        "suku": "Melayu",
+        "split": "test",
+        "normalized": "normalized/test/Melayu/Farrel_Melayu_Tersenyum_Miring_Terang_Jauh_normalized.jpg",
+        "face_detected": true,
+        "augmented_versions": [],
+        "metadata": {
+          "nama": "Farrel",
+          "suku": "Melayu",
+          "ekspresi": "Tersenyum",
+          "sudut": "Miring",
+          "pencahayaan": "Terang",
+          "jarak": "Jauh"
+        }
+      },
+      "test/Jawa/Febytha_Jawa_Terkejut_Frontal_Redup_Dekat.jpg": {
         "suku": "Jawa",
         "split": "test",
-        "normalized": "normalized/test/Jawa/Nazla_Jawa_Kaget_Depan_normalized.JPG",
+        "normalized": "normalized/test/Jawa/Febytha_Jawa_Terkejut_Frontal_Redup_Dekat_normalized.jpg",
         "face_detected": true,
-        "augmented_versions": [
-          "test/Jawa/Nazla_Jawa_Kaget_Depan_aug1.JPG",
-          "test/Jawa/Nazla_Jawa_Kaget_Depan_aug2.JPG"
-        ]
+        "augmented_versions": [],
+        "metadata": {
+          "nama": "Febytha",
+          "suku": "Jawa",
+          "ekspresi": "Terkejut",
+          "sudut": "Frontal",
+          "pencahayaan": "Redup",
+          "jarak": "Dekat"
+        }
+      },
+      "test/Jawa/Febytha_Jawa_Tersenyum_Miring_Terang_Jauh.jpg": {
+        "suku": "Jawa",
+        "split": "test",
+        "normalized": "normalized/test/Jawa/Febytha_Jawa_Tersenyum_Miring_Terang_Jauh_normalized.jpg",
+        "face_detected": true,
+        "augmented_versions": [],
+        "metadata": {
+          "nama": "Febytha",
+          "suku": "Jawa",
+          "ekspresi": "Tersenyum",
+          "sudut": "Miring",
+          "pencahayaan": "Terang",
+          "jarak": "Jauh"
+        }
+      },
+      "test/Sunda/Daffa_Sunda_Terkejut_Frontal_Redup_Dekat.jpg": {
+        "suku": "Sunda",
+        "split": "test",
+        "normalized": "normalized/test/Sunda/Daffa_Sunda_Terkejut_Frontal_Redup_Dekat_normalized.jpg",
+        "face_detected": true,
+        "augmented_versions": [],
+        "metadata": {
+          "nama": "Daffa",
+          "suku": "Sunda",
+          "ekspresi": "Terkejut",
+          "sudut": "Frontal",
+          "pencahayaan": "Redup",
+          "jarak": "Dekat"
+        }
+      },
+      "test/Sunda/Fanza_Sunda_Tersenyum_Frontal_Terang_Dekat.jpg": {
+        "suku": "Sunda",
+        "split": "test",
+        "normalized": "normalized/test/Sunda/Fanza_Sunda_Tersenyum_Frontal_Terang_Dekat_normalized.jpg",
+        "face_detected": true,
+        "augmented_versions": [],
+        "metadata": {
+          "nama": "Fanza",
+          "suku": "Sunda",
+          "ekspresi": "Tersenyum",
+          "sudut": "Frontal",
+          "pencahayaan": "Terang",
+          "jarak": "Dekat"
+        }
+      },
+      "test/Sunda/Diva_Sunda_Serius_Miring_Redup_Jauh.jpg": {
+        "suku": "Sunda",
+        "split": "test",
+        "normalized": "normalized/test/Sunda/Diva_Sunda_Serius_Miring_Redup_Jauh_normalized.jpg",
+        "face_detected": true,
+        "augmented_versions": [],
+        "metadata": {
+          "nama": "Diva",
+          "suku": "Sunda",
+          "ekspresi": "Serius",
+          "sudut": "Miring",
+          "pencahayaan": "Redup",
+          "jarak": "Jauh"
+        }
       }
     }
   },
   "split_stats": {
     "train": {
-      "total": 7,
+      "total": 33,
       "per_suku": {
-        "Jawa": 1,
-        "Melayu": 2,
-        "Sunda": 4
+        "Melayu": 11,
+        "Jawa": 8,
+        "Sunda": 14
       }
     },
     "validation": {
-      "total": 3,
+      "total": 8,
       "per_suku": {
-        "Jawa": 1,
-        "Melayu": 1,
-        "Sunda": 1
+        "Melayu": 3,
+        "Jawa": 2,
+        "Sunda": 3
       }
     },
     "test": {
-      "total": 3,
+      "total": 8,
       "per_suku": {
-        "Jawa": 1,
-        "Melayu": 1,
-        "Sunda": 1
+        "Melayu": 3,
+        "Jawa": 2,
+        "Sunda": 3
       }
     }
   }

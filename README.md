@@ -85,10 +85,6 @@ Sistem Pengenalan Etnis Wajah merupakan solusi teknologi komputer vision yang me
 # Periksa versi Python
 python --version
 
-# Buat direktori proyek
-mkdir face-ethnicity-recognition
-cd face-ethnicity-recognition
-
 # Buat virtual environment
 python -m venv venv
 
@@ -104,10 +100,6 @@ venv\Scripts\activate
 # Periksa versi Python
 python3 --version
 
-# Buat direktori proyek
-mkdir face-ethnicity-recognition
-cd face-ethnicity-recognition
-
 # Buat virtual environment
 python3 -m venv venv
 
@@ -115,7 +107,7 @@ python3 -m venv venv
 source venv/bin/activate
 ```
 
-### 2. Kloning Repositori
+### 2. Clone Repositori
 
 ```bash
 git clone https://github.com/farhannm/face-ethnicity-recognition.git
@@ -130,11 +122,6 @@ pip install --upgrade pip
 
 # Instal dependensi utama
 pip install -r requirements.txt
-
-# Instal tambahan untuk computer vision
-pip install opencv-python-headless
-pip install tensorflow
-pip install streamlit
 ```
 
 ### 4. Persiapan Struktur Direktori
@@ -152,34 +139,6 @@ mkdir -p dataset/augmented_dataset
 ```bash
 # Jalankan aplikasi Streamlit
 streamlit run app.py
-```
-
-## Pemecahan Masalah Umum
-
-### Kesalahan Instalasi TensorFlow
-```bash
-# Jika mengalami masalah dengan TensorFlow
-pip uninstall tensorflow
-pip install tensorflow==2.13.0
-
-# Untuk pengguna Mac M1/M2
-pip install tensorflow-macos
-```
-
-### Kesalahan Dependensi
-```bash
-# Update pip dan dependensi
-pip install --upgrade pip
-pip install --upgrade -r requirements.txt
-```
-
-## Verifikasi Instalasi
-
-```bash
-# Periksa instalasi
-python -c "import tensorflow as tf; print(tf.__version__)"
-python -c "import cv2; print(cv2.__version__)"
-streamlit hello
 ```
 
 **Catatan Penting**: 

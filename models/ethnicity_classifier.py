@@ -8,7 +8,7 @@ from tensorflow.keras.optimizers import Adam
 from tensorflow.keras.layers import Dense, GlobalAveragePooling2D, Dropout
 
 class EthnicityClassifier:
-    """
+    """`
     CNN with Transfer Learning for ethnicity classification
     """
     def __init__(self, num_classes=3, input_shape=(224, 224, 3)):
