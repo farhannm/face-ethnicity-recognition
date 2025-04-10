@@ -258,7 +258,7 @@ def display_split_stats(split_stats):
 
 def display_augmentation_stats(augmentation_stats):
     """
-    Tampilkan statistik augmentasi
+    Tampilkan statistik augmentasi dengan perbaikan tampilan grafik
     """
     if not augmentation_stats:
         st.info("Tidak ada data statistik augmentasi. Silakan proses dataset terlebih dahulu.")
@@ -266,32 +266,91 @@ def display_augmentation_stats(augmentation_stats):
     
     st.subheader("Statistik Augmentasi")
     
+    # DEBUG: Tampilkan statistik mentah untuk membantu debugging
+    with st.expander("DEBUG - Raw Statistics"):
+        st.text("Per-Suku Statistics:")
+        for suku, stats in augmentation_stats['per_suku'].items():
+            st.text(f"{suku}: {stats}")
+        
+        st.text(f"\nTotal Images: {augmentation_stats.get('total_images', 0)}")
+        st.text(f"Normalized Images: {augmentation_stats.get('normalized_images', 0)}")
+        st.text(f"Augmented Images: {augmentation_stats.get('augmented_images', 0)}")
+        st.text(f"Faces Not Detected: {augmentation_stats.get('faces_not_detected', 0)}")
+    
     # Siapkan data untuk visualisasi augmentasi
     aug_data = []
     for suku, suku_stats in augmentation_stats['per_suku'].items():
-        aug_data.append({
-            'Suku': suku,
-            'Gambar Asli': suku_stats['original'],
-            'Gambar Normalisasi': suku_stats.get('normalized', 0),
-            'Gambar Augmentasi': suku_stats['augmented']
-        })
+        # Pastikan semua nilai yang diperlukan ada
+        original = suku_stats.get('original', 0)
+        normalized = suku_stats.get('normalized', 0)
+        augmented = suku_stats.get('augmented', 0)
+        
+        # Debug: Tampilkan nilai untuk memverifikasi
+        st.text(f"Debug - Suku: {suku}, Original: {original}, Normalized: {normalized}, Augmented: {augmented}")
+        
+        # Hanya tambahkan data jika setidaknya satu nilai tidak nol
+        if original > 0 or normalized > 0 or augmented > 0:
+            aug_data.append({
+                'Suku': suku,
+                'Gambar Asli': original,
+                'Gambar Normalisasi': normalized,
+                'Gambar Augmentasi': augmented
+            })
     
+    # Buat dataframe
     df_aug = pd.DataFrame(aug_data)
     
+    # Tampilkan dataframe untuk debugging
+    st.write("Data untuk pembuatan grafik:")
+    st.dataframe(df_aug)
+    
     # Buat plot augmentasi
-    plt.figure(figsize=(12, 6))
-    df_aug.plot(x='Suku', y=['Gambar Asli', 'Gambar Normalisasi', 'Gambar Augmentasi'], kind='bar', stacked=False)
-    plt.title('Perbandingan Gambar Asli, Normalisasi, dan Augmentasi per Suku')
-    plt.xlabel('Suku')
-    plt.ylabel('Jumlah Gambar')
-    plt.legend(title='Jenis Gambar')
-    st.pyplot(plt)
+    if not df_aug.empty:
+        try:
+            fig, ax = plt.subplots(figsize=(12, 6))
+            df_aug.plot(x='Suku', y=['Gambar Asli', 'Gambar Normalisasi', 'Gambar Augmentasi'], 
+                        kind='bar', stacked=False, ax=ax, color=['#1f77b4', '#ff7f0e', '#2ca02c'])
+            
+            plt.title('Perbandingan Gambar Asli, Normalisasi, dan Augmentasi per Suku')
+            plt.xlabel('Suku')
+            plt.ylabel('Jumlah Gambar')
+            plt.legend(title='Jenis Gambar')
+            plt.tight_layout()
+            
+            # Tambahkan label jumlah di atas setiap bar
+            for container in ax.containers:
+                ax.bar_label(container, label_type='edge', fmt='%d')
+                
+            st.pyplot(fig)
+        except Exception as e:
+            st.error(f"Error saat membuat plot: {e}")
+            # Fallback ke metode plotting yang lebih sederhana
+            try:
+                plt.figure(figsize=(12, 6))
+                x = df_aug['Suku']
+                width = 0.25
+                x_pos = np.arange(len(x))
+                
+                plt.bar(x_pos - width, df_aug['Gambar Asli'], width, label='Gambar Asli', color='#1f77b4')
+                plt.bar(x_pos, df_aug['Gambar Normalisasi'], width, label='Gambar Normalisasi', color='#ff7f0e')
+                plt.bar(x_pos + width, df_aug['Gambar Augmentasi'], width, label='Gambar Augmentasi', color='#2ca02c')
+                
+                plt.xticks(x_pos, x)
+                plt.title('Perbandingan Gambar Asli, Normalisasi, dan Augmentasi per Suku')
+                plt.xlabel('Suku')
+                plt.ylabel('Jumlah Gambar')
+                plt.legend(title='Jenis Gambar')
+                st.pyplot(plt)
+            except Exception as fallback_error:
+                st.error(f"Fallback plotting juga gagal: {fallback_error}")
+    else:
+        st.warning("Tidak ada data untuk ditampilkan dalam grafik")
     
     # Tampilkan statistik augmentasi
     st.subheader("Rincian Augmentasi")
-    st.write(f"Total Gambar Asli: {augmentation_stats['total_images']}")
+    st.write(f"Total Gambar Asli: {augmentation_stats.get('total_images', 0)}")
     st.write(f"Total Gambar Normalisasi: {augmentation_stats.get('normalized_images', 0)}")
-    st.write(f"Total Gambar Augmentasi: {augmentation_stats['augmented_images']}")
+    st.write(f"Total Gambar Augmentasi: {augmentation_stats.get('augmented_images', 0)}")
     st.write(f"Wajah Tidak Terdeteksi: {augmentation_stats.get('faces_not_detected', 0)}")
     
     # Visualisasi proporsi wajah terdeteksi vs tidak terdeteksi
@@ -314,9 +373,9 @@ def display_augmentation_stats(augmentation_stats):
     st.write("\nRincian per Suku:")
     aug_detail = {
         suku: {
-            'Gambar Asli': suku_stats['original'],
+            'Gambar Asli': suku_stats.get('original', 0),
             'Gambar Normalisasi': suku_stats.get('normalized', 0),
-            'Gambar Augmentasi': suku_stats['augmented'],
+            'Gambar Augmentasi': suku_stats.get('augmented', 0),
             'Wajah Tidak Terdeteksi': suku_stats.get('faces_not_detected', 0)
         } 
         for suku, suku_stats in augmentation_stats['per_suku'].items()
@@ -418,7 +477,8 @@ def display_normalization_comparison(augmentation_stats, augmented_dataset_dir, 
                     original_images[orig_path] = {
                         'normalized': aug_info['normalized'],
                         'face_detected': aug_info.get('face_detected', True),
-                        'metadata': aug_info.get('metadata', {})
+                        'metadata': aug_info.get('metadata', {}),
+                        'subjek': aug_info.get('subjek', '')  # Ambil subjek dari data
                     }
     
     # Jika tidak ada gambar untuk kombinasi suku dan split yang dipilih
@@ -481,6 +541,16 @@ def display_normalization_comparison(augmentation_stats, augmented_dataset_dir, 
         st.warning(f"Tidak ada gambar yang memenuhi kriteria filter")
         return
     
+    # Debug: Tampilkan informasi path
+    with st.expander("DEBUG: Path Format Analysis"):
+        for path in list(filtered_images.keys())[:3]:  # Lihat beberapa path saja
+            st.text(f"Original path: {path}")
+            parts = path.split('/')
+            if len(parts) >= 4:
+                st.text(f"  Split: {parts[0]}, Suku: {parts[1]}, Subjek: {parts[2]}, Filename: {parts[3]}")
+            else:
+                st.text(f"  Path components: {parts} (invalid format)")
+    
     # Tampilkan pilihan gambar
     image_options = list(filtered_images.keys())
     
@@ -528,42 +598,63 @@ def display_normalization_comparison(augmentation_stats, augmented_dataset_dir, 
         # Buat baris untuk gambar asli dan hasil normalisasi
         cols = st.columns(2)
         
-        # Path lengkap ke gambar asli di direktori output
-        full_orig_path = os.path.join(augmented_dataset_dir, orig_path)
-        
-        # Juga perlu mendapatkan path ke gambar asli dari raw untuk perbandingan
-        # Kita perlu mengekstrak informasi subjek, suku, dan nama file
-        parts = orig_path.split('/')
-        suku = parts[1]
-        filename = parts[2]
-        
-        # Ekstrak nama subjek dari nama file (contoh: Fanza_Sunda_...)
-        name_parts = filename.split('_')
-        if len(name_parts) >= 2:
-            subjek = name_parts[0]
-            raw_suku = name_parts[1]
-            # Path ke raw image
-            raw_path = os.path.join(input_dir, raw_suku, subjek, filename)
-        else:
-            # Jika nama file tidak sesuai pola, gunakan gambar dari output saja
-            raw_path = full_orig_path
-        
-        # Path ke gambar normalisasi
-        norm_path = os.path.join(augmented_dataset_dir, norm_info['normalized'])
-        
-        # Periksa apakah raw image tersedia
-        if os.path.exists(raw_path):
-            try:
-                raw_image = Image.open(raw_path)
+        try:
+            # Ekstrak informasi suku, subjek, dan nama file dari path
+            parts = orig_path.split('/')
+            if len(parts) >= 4:  # Pastikan format valid
+                suku = parts[1]
+                subjek = parts[2]
+                filename = parts[3]
+                
+                # Path ke raw image di struktur raw: dataset/raw/<SUKU>/<SUBJEK>/<file>.jpg
+                raw_path = os.path.join(input_dir, suku, subjek, filename)
+                
+                # Tampilkan path untuk debugging
+                with st.expander("DEBUG: File Paths"):
+                    st.text(f"Raw path: {raw_path}")
+                    st.text(f"Original path in augmented dir: {os.path.join(augmented_dataset_dir, orig_path)}")
+                    st.text(f"Normalized path: {os.path.join(augmented_dataset_dir, norm_info['normalized'])}")
+                
+                # Check if file exists and display
+                if os.path.exists(raw_path):
+                    try:
+                        raw_image = Image.open(raw_path)
+                        with cols[0]:
+                            st.write("Gambar Raw Asli:")
+                            st.image(raw_image, use_column_width=True)
+                    except Exception as e:
+                        with cols[0]:
+                            st.error(f"Tidak dapat menampilkan gambar raw: {e}")
+                else:
+                    with cols[0]:
+                        st.warning(f"File raw tidak ditemukan di: {raw_path}")
+                        
+                        # Alternatif: Mencoba path lain
+                        alt_parts = filename.split('_')
+                        if len(alt_parts) >= 2:
+                            subjek_name = alt_parts[0]  # Nama subjek dari filename
+                            raw_suku = alt_parts[1]     # Suku dari filename
+                            alt_path = os.path.join(input_dir, raw_suku, subjek_name, filename)
+                            
+                            st.caption(f"Mencoba path alternatif: {alt_path}")
+                            if os.path.exists(alt_path):
+                                try:
+                                    raw_image = Image.open(alt_path)
+                                    st.write("Gambar Raw Asli (path alternatif):")
+                                    st.image(raw_image, use_column_width=True)
+                                except Exception as e:
+                                    st.error(f"Tidak dapat menampilkan gambar raw alternatif: {e}")
+            else:
                 with cols[0]:
-                    st.write("Gambar Raw Asli:")
-                    st.image(raw_image, use_column_width=True)
-            except Exception as e:
-                with cols[0]:
-                    st.error(f"Tidak dapat menampilkan gambar raw: {e}")
+                    st.error(f"Format path tidak valid: {orig_path}")
+        except Exception as e:
+            with cols[0]:
+                st.error(f"Error saat mengakses gambar: {e}")
         
         # Tampilkan gambar normalisasi
         try:
+            norm_path = os.path.join(augmented_dataset_dir, norm_info['normalized'])
+            
             if os.path.exists(norm_path):
                 norm_image = Image.open(norm_path)
                 with cols[1]:
@@ -573,7 +664,8 @@ def display_normalization_comparison(augmentation_stats, augmented_dataset_dir, 
                 with cols[1]:
                     st.error(f"File normalisasi tidak ditemukan: {norm_path}")
         except Exception as e:
-            st.error(f"Error saat menampilkan gambar normalisasi: {e}")
+            with cols[1]:
+                st.error(f"Error saat menampilkan gambar normalisasi: {e}")
         
         # Tambahkan garis pemisah
         st.markdown("---")
@@ -587,6 +679,21 @@ def display_augmentation_comparison(augmentation_stats, augmented_dataset_dir, i
         return
     
     st.subheader("Perbandingan Gambar Asli dan Hasil Augmentasi")
+    
+    # Debug: Tampilkan daftar suku yang memiliki augmentasi
+    augmented_suku = {}
+    if 'augmentation_map' in augmentation_stats:
+        for path, info in augmentation_stats['augmentation_map'].items():
+            if 'augmented_versions' in info and len(info['augmented_versions']) > 0:
+                suku = info['suku']
+                split = info['split']
+                if suku not in augmented_suku:
+                    augmented_suku[suku] = {'train': 0, 'validation': 0, 'test': 0}
+                augmented_suku[suku][split] += 1
+    
+    with st.expander("DEBUG - Suku dengan augmentasi:"):
+        for suku, counts in augmented_suku.items():
+            st.text(f"  {suku}: Train: {counts['train']}, Val: {counts['validation']}, Test: {counts['test']}")
     
     # Filter berdasarkan suku
     available_suku = list(augmentation_stats['per_suku'].keys())
@@ -614,12 +721,26 @@ def display_augmentation_comparison(augmentation_stats, augmented_dataset_dir, i
                         'normalized': aug_info.get('normalized', None),
                         'augmented_versions': aug_info['augmented_versions'],
                         'face_detected': aug_info.get('face_detected', True),
-                        'metadata': aug_info.get('metadata', {})
+                        'metadata': aug_info.get('metadata', {}),
+                        'subjek': aug_info.get('subjek', '')  # Tambahkan subjek
                     }
     
     # Jika tidak ada gambar untuk kombinasi suku dan split yang dipilih
     if not original_images:
         st.warning(f"Tidak ada gambar dengan augmentasi untuk suku {selected_suku} di split {selected_split}")
+        
+        # Debug info: tampilkan path-path yang terkait dengan suku dan split ini
+        with st.expander(f"DEBUG - Mencari path untuk {selected_suku} di {selected_split}:"):
+            count = 0
+            for path, info in augmentation_stats['augmentation_map'].items():
+                if info['suku'] == selected_suku and info['split'] == selected_split:
+                    count += 1
+                    if count <= 5:  # Batasi hanya 5 contoh
+                        st.text(f"  Path: {path}")
+                        st.text(f"  Has augmentation: {'augmented_versions' in info}")
+                        if 'augmented_versions' in info:
+                            st.text(f"  Augmented count: {len(info['augmented_versions'])}")
+        
         if selected_split != "train":
             st.info("Augmentasi biasanya hanya dilakukan pada data training.")
         return
@@ -662,6 +783,16 @@ def display_augmentation_comparison(augmentation_stats, augmented_dataset_dir, i
     
     # Tampilkan pilihan gambar
     image_options = list(filtered_images.keys())
+    
+    # Debug: Tampilkan format path
+    with st.expander("DEBUG: Path Format Analysis"):
+        for path in list(filtered_images.keys())[:3]:  # Lihat beberapa path saja
+            st.text(f"Original path: {path}")
+            parts = path.split('/')
+            if len(parts) >= 4:
+                st.text(f"  Split: {parts[0]}, Suku: {parts[1]}, Subjek: {parts[2]}, Filename: {parts[3]}")
+            else:
+                st.text(f"  Path components: {parts} (invalid format)")
     
     # Dapatkan nama-nama gambar saja (tanpa path)
     display_options = [os.path.basename(img_path) for img_path in image_options]
@@ -708,41 +839,65 @@ def display_augmentation_comparison(augmentation_stats, augmented_dataset_dir, i
         # Buat baris untuk gambar asli, normalisasi, dan augmentasi
         cols = st.columns(3)
         
-        # Path lengkap ke gambar asli di direktori output
-        full_orig_path = os.path.join(augmented_dataset_dir, orig_path)
-        
-        # Juga perlu mendapatkan path ke gambar asli dari raw untuk perbandingan
-        # Kita perlu mengekstrak informasi subjek, suku, dan nama file
-        parts = orig_path.split('/')
-        suku = parts[1]
-        filename = parts[2]
-        
-        # Ekstrak nama subjek dari nama file (contoh: Fanza_Sunda_...)
-        name_parts = filename.split('_')
-        if len(name_parts) >= 2:
-            subjek = name_parts[0]
-            raw_suku = name_parts[1]
-            # Path ke raw image
-            raw_path = os.path.join(input_dir, raw_suku, subjek, filename)
-        else:
-            # Jika nama file tidak sesuai pola, gunakan gambar dari output saja
-            raw_path = full_orig_path
-        
-        # Periksa apakah raw image tersedia
-        if os.path.exists(raw_path):
-            try:
-                raw_image = Image.open(raw_path)
+        try:
+            # Ekstrak informasi suku, subjek, dan nama file dari path
+            parts = orig_path.split('/')
+            if len(parts) >= 4:  # Pastikan format valid
+                suku = parts[1]
+                subjek = parts[2]
+                filename = parts[3]
+                
+                # Path ke raw image di struktur raw: dataset/raw/<SUKU>/<SUBJEK>/<file>.jpg
+                raw_path = os.path.join(input_dir, suku, subjek, filename)
+                
+                # Tampilkan path untuk debugging
+                with st.expander("DEBUG: File Paths"):
+                    st.text(f"Raw path: {raw_path}")
+                    st.text(f"Normalized path: {os.path.join(augmented_dataset_dir, img_info.get('normalized', ''))}")
+                    if aug_paths and len(aug_paths) > 0:
+                        st.text(f"First augmentation path: {os.path.join(augmented_dataset_dir, aug_paths[0])}")
+                
+                # Check if file exists and display
+                if os.path.exists(raw_path):
+                    try:
+                        raw_image = Image.open(raw_path)
+                        with cols[0]:
+                            st.write("Gambar Raw Asli:")
+                            st.image(raw_image, use_column_width=True)
+                    except Exception as e:
+                        with cols[0]:
+                            st.error(f"Tidak dapat menampilkan gambar raw: {e}")
+                else:
+                    with cols[0]:
+                        st.warning(f"File raw tidak ditemukan di: {raw_path}")
+                        
+                        # Alternatif: Mencoba path lain
+                        alt_parts = filename.split('_')
+                        if len(alt_parts) >= 2:
+                            subjek_name = alt_parts[0]  # Nama subjek dari filename
+                            raw_suku = alt_parts[1]     # Suku dari filename
+                            alt_path = os.path.join(input_dir, raw_suku, subjek_name, filename)
+                            
+                            st.caption(f"Mencoba path alternatif: {alt_path}")
+                            if os.path.exists(alt_path):
+                                try:
+                                    raw_image = Image.open(alt_path)
+                                    st.write("Gambar Raw Asli (path alternatif):")
+                                    st.image(raw_image, use_column_width=True)
+                                except Exception as e:
+                                    st.error(f"Tidak dapat menampilkan gambar raw alternatif: {e}")
+            else:
                 with cols[0]:
-                    st.write("Gambar Raw Asli:")
-                    st.image(raw_image, use_column_width=True)
-            except Exception as e:
-                with cols[0]:
-                    st.error(f"Tidak dapat menampilkan gambar raw: {e}")
+                    st.error(f"Format path tidak valid: {orig_path}")
+        except Exception as e:
+            with cols[0]:
+                st.error(f"Error saat mengakses gambar: {e}")
         
         # Tampilkan gambar normalisasi
         if 'normalized' in img_info and img_info['normalized']:
             try:
                 norm_path = os.path.join(augmented_dataset_dir, img_info['normalized'])
+                
                 if os.path.exists(norm_path):
                     norm_image = Image.open(norm_path)
                     with cols[1]:
@@ -753,13 +908,14 @@ def display_augmentation_comparison(augmentation_stats, augmented_dataset_dir, i
                         st.error(f"File normalisasi tidak ditemukan")
             except Exception as e:
                 with cols[1]:
-                    st.error(f"Error saat menampilkan gambar normalisasi")
+                    st.error(f"Error saat menampilkan gambar normalisasi: {e}")
         
         try:
             # Tampilkan contoh augmentasi (ambil yang pertama)
             if aug_paths and len(aug_paths) > 0:
                 # Path lengkap ke gambar augmentasi
                 full_aug_path = os.path.join(augmented_dataset_dir, aug_paths[0])
+                
                 if os.path.exists(full_aug_path):
                     aug_image = Image.open(full_aug_path)
                     with cols[2]:
@@ -767,33 +923,46 @@ def display_augmentation_comparison(augmentation_stats, augmented_dataset_dir, i
                         st.image(aug_image, use_column_width=True)
                 else:
                     with cols[2]:
-                        st.error(f"File augmentasi tidak ditemukan")
+                        st.error(f"File augmentasi tidak ditemukan: {full_aug_path}")
+            else:
+                with cols[2]:
+                    st.warning("Tidak ada gambar augmentasi")
         except Exception as e:
             with cols[2]:
-                st.error(f"Error saat menampilkan gambar augmentasi")
+                st.error(f"Error saat menampilkan gambar augmentasi: {e}")
         
         # Tampilkan semua hasil augmentasi
         st.write("Semua Hasil Augmentasi:")
         
         # Gunakan grid untuk menampilkan semua hasil augmentasi
-        num_cols = 3  # Jumlah kolom dalam grid
-        num_rows = (len(aug_paths) + num_cols - 1) // num_cols  # Jumlah baris yang dibutuhkan
-        
-        for row in range(num_rows):
-            aug_cols = st.columns(num_cols)
-            for col in range(num_cols):
-                idx = row * num_cols + col
-                if idx < len(aug_paths):
-                    aug_path = aug_paths[idx]
-                    # Path lengkap ke gambar augmentasi
-                    full_aug_path = os.path.join(augmented_dataset_dir, aug_path)
-                    if os.path.exists(full_aug_path):
-                        aug_image = Image.open(full_aug_path)
-                        with aug_cols[col]:
-                            st.write(f"Augmentasi #{idx+1}:")
-                            st.image(aug_image, use_column_width=True)
-                            # Tampilkan nama file
-                            st.caption(os.path.basename(aug_path))
+        if aug_paths and len(aug_paths) > 0:
+            num_cols = 3  # Jumlah kolom dalam grid
+            num_rows = (len(aug_paths) + num_cols - 1) // num_cols  # Jumlah baris yang dibutuhkan
+            
+            for row in range(num_rows):
+                aug_cols = st.columns(num_cols)
+                for col in range(num_cols):
+                    idx = row * num_cols + col
+                    if idx < len(aug_paths):
+                        aug_path = aug_paths[idx]
+                        # Path lengkap ke gambar augmentasi
+                        full_aug_path = os.path.join(augmented_dataset_dir, aug_path)
+                        if os.path.exists(full_aug_path):
+                            try:
+                                aug_image = Image.open(full_aug_path)
+                                with aug_cols[col]:
+                                    st.write(f"Augmentasi #{idx+1}:")
+                                    st.image(aug_image, use_column_width=True)
+                                    # Tampilkan nama file
+                                    st.caption(os.path.basename(aug_path))
+                            except Exception as e:
+                                with aug_cols[col]:
+                                    st.error(f"Error: {e}")
+                        else:
+                            with aug_cols[col]:
+                                st.warning(f"File augmentasi tidak ditemukan: {os.path.basename(aug_path)}")
+        else:
+            st.warning("Tidak ada gambar augmentasi untuk ditampilkan")
         
         # Tambahkan garis pemisah
         st.markdown("---")

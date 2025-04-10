@@ -124,17 +124,7 @@ pip install --upgrade pip
 pip install -r requirements.txt
 ```
 
-### 4. Persiapan Struktur Direktori
-
-```bash
-# Buat direktori yang diperlukan
-mkdir -p models/weights
-mkdir -p dataset/raw
-mkdir -p dataset/final_dataset
-mkdir -p dataset/augmented_dataset
-```
-
-### 5. Jalankan Aplikasi
+### 4. Jalankan Aplikasi
 
 ```bash
 # Jalankan aplikasi Streamlit
