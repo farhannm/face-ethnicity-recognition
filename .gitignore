@@ -10,9 +10,6 @@ dataset/raw/
 dataset/final_dataset/
 dataset/augmented_dataset/
 
-# Model Weights
-models/weights/
-
 # Python Compiled Files
 __pycache__/
 *.py[cod]
