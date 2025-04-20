@@ -1,175 +1,40 @@
 import cv2
 import numpy as np
 import os
-from scipy.spatial import distance
 
-def detect_and_align_face(image, face_cascade_path=None, eye_cascade_path=None, target_size=(500, 500)):
+def preprocess_face_for_facenet(face_img, target_size=(160, 160)):
     """
-    Deteksi wajah, melakukan alignment, dan normalisasi ukuran
+    Preprocess face image for FaceNet model input
     
     Args:
-        image: Gambar input (format BGR dari OpenCV)
-        face_cascade_path: Path ke file XML Haar Cascade untuk deteksi wajah
-        eye_cascade_path: Path ke file XML Haar Cascade untuk deteksi mata
-        target_size: Ukuran target output (width, height)
+        face_img: Aligned face image
+        target_size: Target size for FaceNet (default: 160x160)
         
     Returns:
-        normalized_face: Wajah yang sudah dinormalisasi ukuran dan alignment
-        face_found: Boolean yang menunjukkan apakah wajah terdeteksi
-        face_rect: Koordinat wajah yang terdeteksi (x, y, w, h)
+        processed_face: Face image ready for FaceNet input
     """
-    # Konversi ke grayscale untuk deteksi
-    if len(image.shape) == 3:
-        gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
-    else:
-        gray = image.copy()
-    
-    # Inisialisasi face detector dengan Haar Cascade
-    try:
-        # Gunakan cascade yang disediakan atau default OpenCV
-        if face_cascade_path and os.path.exists(face_cascade_path):
-            face_cascade = cv2.CascadeClassifier(face_cascade_path)
-        else:
-            face_cascade = cv2.CascadeClassifier(cv2.data.haarcascades + 'haarcascade_frontalface_default.xml')
-            
-        if eye_cascade_path and os.path.exists(eye_cascade_path):
-            eye_cascade = cv2.CascadeClassifier(eye_cascade_path)
-        else:
-            eye_cascade = cv2.CascadeClassifier(cv2.data.haarcascades + 'haarcascade_eye.xml')
-    except Exception as e:
-        print(f"Error loading cascade classifiers: {e}")
-        # Jika gagal memuat detector, kembalikan gambar asli
-        resized = cv2.resize(image, target_size)
-        return resized, False, None
-    
-    # Deteksi wajah - coba beberapa parameter untuk meningkatkan deteksi
-    faces = face_cascade.detectMultiScale(gray, 1.1, 5, minSize=(30, 30))
-    
-    # Jika tidak ada wajah yang terdeteksi, coba parameter yang lebih toleran
-    if len(faces) == 0:
-        faces = face_cascade.detectMultiScale(gray, 1.1, 3, minSize=(30, 30))
-        
-    # Jika masih tidak ada wajah, coba scaling yang berbeda
-    if len(faces) == 0:
-        faces = face_cascade.detectMultiScale(gray, 1.05, 4, minSize=(20, 20))
-    
-    # Jika tidak ada wajah yang terdeteksi, kembalikan gambar yang diubah ukuran saja
-    if len(faces) == 0:
-        print("No face detected, resizing original image")
-        resized = cv2.resize(image, target_size)
-        return resized, False, None
-    
-    # Ambil wajah terbesar jika ada beberapa wajah
-    face_areas = [w*h for (x, y, w, h) in faces]
-    largest_face_idx = np.argmax(face_areas)
-    x, y, w, h = faces[largest_face_idx]
-    face_rect = (x, y, w, h)
-    
-    # Ekstrak region wajah dengan margin
-    margin_x = int(w * 0.2)  # 20% margin
-    margin_y = int(h * 0.2)
-    
-    # Pastikan koordinat tidak melebihi batas gambar
-    x1 = max(0, x - margin_x)
-    y1 = max(0, y - margin_y)
-    x2 = min(image.shape[1], x + w + margin_x)
-    y2 = min(image.shape[0], y + h + margin_y)
-    
-    face_img = image[y1:y2, x1:x2]
-    
-    # Deteksi mata di region wajah untuk alignment
-    if len(face_img.shape) == 3:
-        face_gray = cv2.cvtColor(face_img, cv2.COLOR_BGR2GRAY)
-    else:
-        face_gray = face_img.copy()
-    
-    eyes = eye_cascade.detectMultiScale(face_gray, 1.1, 3, minSize=(20, 20))
-    
-    # Jika kurang dari 2 mata terdeteksi, langsung resize saja
-    if len(eyes) < 2:
-        aligned_face = face_img
-    else:
-        # Ambil 2 titik mata dengan jarak terjauh untuk alignment
-        eye_centers = [(ex + ew//2, ey + eh//2) for ex, ey, ew, eh in eyes]
-        
-        # Hitung semua kemungkinan pasangan mata
-        eye_pairs = [(i, j) for i in range(len(eye_centers)) for j in range(i+1, len(eye_centers))]
-        
-        # Pilih pasangan mata dengan jarak horizontal terbesar
-        if eye_pairs:
-            best_pair = max(eye_pairs, key=lambda pair: abs(eye_centers[pair[0]][0] - eye_centers[pair[1]][0]))
-            left_eye, right_eye = eye_centers[best_pair[0]], eye_centers[best_pair[1]]
-            
-            # Pastikan mata kiri ada di sebelah kiri
-            if left_eye[0] > right_eye[0]:
-                left_eye, right_eye = right_eye, left_eye
-            
-            # Hitung sudut untuk alignment
-            dx = right_eye[0] - left_eye[0]
-            dy = right_eye[1] - left_eye[1]
-            
-            if dx > 0:
-                angle = np.degrees(np.arctan2(dy, dx))
-                
-                # Pusat rotasi adalah tengah-tengah kedua mata
-                center_x = int((left_eye[0] + right_eye[0]) / 2)
-                center_y = int((left_eye[1] + right_eye[1]) / 2)
-                center = (center_x, center_y)
-                
-                # Ambil matrix rotasi dan lakukan warp affine
-                rotation_matrix = cv2.getRotationMatrix2D(center, angle, 1.0)
-                aligned_face = cv2.warpAffine(face_img, rotation_matrix, (face_img.shape[1], face_img.shape[0]),
-                                            flags=cv2.INTER_CUBIC, borderMode=cv2.BORDER_CONSTANT)
-            else:
-                aligned_face = face_img
-        else:
-            aligned_face = face_img
-    
-    # Resize ke ukuran target
-    normalized_face = cv2.resize(aligned_face, target_size)
-    
-    # Normalisasi pencahayaan dengan CLAHE
-    if len(normalized_face.shape) == 3:
-        # Untuk gambar berwarna, normalisasi di channel L dari Lab
-        lab = cv2.cvtColor(normalized_face, cv2.COLOR_BGR2LAB)
-        l, a, b = cv2.split(lab)
-        
-        # Terapkan CLAHE pada channel L
-        clahe = cv2.createCLAHE(clipLimit=2.0, tileGridSize=(8, 8))
-        cl = clahe.apply(l)
-        
-        # Gabungkan kembali
-        normalized_lab = cv2.merge((cl, a, b))
-        normalized_face = cv2.cvtColor(normalized_lab, cv2.COLOR_LAB2BGR)
-    else:
-        # Untuk gambar grayscale
-        clahe = cv2.createCLAHE(clipLimit=2.0, tileGridSize=(8, 8))
-        normalized_face = clahe.apply(normalized_face)
-    
-    return normalized_face, True, face_rect
-
-def preprocess_face_for_ethnicity(face_img, target_size=(224, 224)):
-    """
-    Preprocess face image for Ethnicity Classifier
-    
-    Args:
-        face_img: Face image from face detector
-        target_size: Target size for the model
-        
-    Returns:
-        processed_face: Face image ready for Ethnicity Classifier input
-    """
-    # Resize to target size
+    # Resize to FaceNet input size
     face_resized = cv2.resize(face_img, target_size)
     
-    # Convert to RGB if needed
+    # Convert to RGB if needed (FaceNet expects RGB)
     if len(face_resized.shape) == 2:  # Grayscale
         face_resized = cv2.cvtColor(face_resized, cv2.COLOR_GRAY2RGB)
     elif face_resized.shape[2] == 4:  # RGBA
         face_resized = cv2.cvtColor(face_resized, cv2.COLOR_RGBA2RGB)
+    elif face_resized.shape[2] == 3:  # BGR (OpenCV default)
+        face_resized = cv2.cvtColor(face_resized, cv2.COLOR_BGR2RGB)
     
-    # Normalize pixel values to [0, 1]
-    face_normalized = face_resized / 255.0
+    # Convert to float32
+    face_normalized = face_resized.astype(np.float32)
+    
+    # Scale pixel values to [0, 1]
+    face_normalized /= 255.0
+    
+    # Standardize image (mean=0, std=1)
+    mean = np.mean(face_normalized, axis=(0, 1, 2))
+    std = np.std(face_normalized, axis=(0, 1, 2))
+    std_adj = np.maximum(std, 1.0/np.sqrt(face_normalized.size))
+    face_normalized = (face_normalized - mean) / std_adj
     
     # Add batch dimension
     face_batch = np.expand_dims(face_normalized, axis=0)
@@ -205,6 +70,57 @@ def normalize_face(face_img):
     normalized_face = cv2.cvtColor(normalized_lab, cv2.COLOR_LAB2BGR)
     
     return normalized_face
+
+def align_face_with_landmarks(face_img, landmarks, target_size=(224, 224)):
+    """
+    Align face based on eye landmarks
+    
+    Args:
+        face_img: Input face image
+        landmarks: Dictionary containing facial landmarks
+        target_size: Target size for aligned face
+        
+    Returns:
+        aligned_face: Aligned face image
+    """
+    # Get eye landmarks
+    left_eye = landmarks['left_eye']
+    right_eye = landmarks['right_eye']
+    
+    # Calculate angle for alignment
+    dx = right_eye[0] - left_eye[0]
+    dy = right_eye[1] - left_eye[1]
+    
+    if dx == 0:
+        angle = 0
+    else:
+        angle = np.degrees(np.arctan2(dy, dx))
+    
+    # Get center point between eyes
+    center_x = (left_eye[0] + right_eye[0]) // 2
+    center_y = (left_eye[1] + right_eye[1]) // 2
+    center = (center_x, center_y)
+    
+    # Get rotation matrix
+    rotation_matrix = cv2.getRotationMatrix2D(center, angle, 1.0)
+    
+    # Determine output image size
+    h, w = face_img.shape[:2]
+    
+    # Apply rotation
+    aligned_face = cv2.warpAffine(
+        face_img, 
+        rotation_matrix, 
+        (w, h),
+        flags=cv2.INTER_CUBIC, 
+        borderMode=cv2.BORDER_CONSTANT,
+        borderValue=(0, 0, 0)
+    )
+    
+    # Resize to target size
+    aligned_face = cv2.resize(aligned_face, target_size)
+    
+    return aligned_face
 
 def parse_image_metadata(filename):
     """
@@ -251,3 +167,126 @@ def parse_image_metadata(filename):
             metadata['jarak'] = 'unknown'
     
     return metadata
+
+def compare_face_features(embedding1, embedding2, metric='cosine'):
+    """
+    Compare two face embeddings to determine similarity
+    
+    Args:
+        embedding1: First face embedding
+        embedding2: Second face embedding
+        metric: Similarity metric ('cosine' or 'euclidean')
+        
+    Returns:
+        similarity: Similarity score (0-1, higher means more similar)
+    """
+    # Flatten embeddings
+    emb1 = embedding1.flatten()
+    emb2 = embedding2.flatten()
+    
+    # Calculate similarity
+    if metric == 'cosine':
+        # Compute cosine similarity
+        dot_product = np.dot(emb1, emb2)
+        norm1 = np.linalg.norm(emb1)
+        norm2 = np.linalg.norm(emb2)
+        
+        # Check for zero division
+        if norm1 == 0 or norm2 == 0:
+            return 0.0
+            
+        cos_sim = dot_product / (norm1 * norm2)
+        
+        # Convert to similarity (0-1 range)
+        similarity = (cos_sim + 1) / 2
+    else:  # euclidean
+        # Compute Euclidean distance
+        euclidean_dist = np.linalg.norm(emb1 - emb2)
+        
+        # Convert to similarity (0-1 range) using exponential decay
+        similarity = np.exp(-euclidean_dist)
+    
+    return similarity
+
+def enhance_face_for_comparison(face_img, target_size=(224, 224)):
+    """
+    Enhanced preprocessing for face comparison
+    
+    Args:
+        face_img: Input face image
+        target_size: Target size for processed face
+        
+    Returns:
+        enhanced_face: Enhanced face image optimized for comparison
+    """
+    # Resize to target size
+    face_resized = cv2.resize(face_img, target_size)
+    
+    # Convert to grayscale for better invariance to color/lighting
+    face_gray = cv2.cvtColor(face_resized, cv2.COLOR_BGR2GRAY)
+    
+    # Apply histogram equalization for lighting normalization
+    face_equalized = cv2.equalizeHist(face_gray)
+    
+    # Apply Gaussian blur to reduce noise
+    face_filtered = cv2.GaussianBlur(face_equalized, (5, 5), 0)
+    
+    # Apply CLAHE for better local contrast
+    clahe = cv2.createCLAHE(clipLimit=2.0, tileGridSize=(8, 8))
+    face_clahe = clahe.apply(face_filtered)
+    
+    # Convert back to BGR for compatibility with other functions
+    enhanced_face = cv2.cvtColor(face_clahe, cv2.COLOR_GRAY2BGR)
+    
+    return enhanced_face
+
+def remove_background(face_img):
+    """
+    Attempt to remove background from face image
+    
+    Args:
+        face_img: Input face image
+        
+    Returns:
+        face_without_bg: Face image with background removed or minimized
+    """
+    # Convert to grayscale
+    gray = cv2.cvtColor(face_img, cv2.COLOR_BGR2GRAY)
+    
+    # Apply GaussianBlur to reduce noise
+    blurred = cv2.GaussianBlur(gray, (7, 7), 0)
+    
+    # Create a binary mask using adaptive thresholding
+    _, mask = cv2.threshold(blurred, 0, 255, cv2.THRESH_BINARY + cv2.THRESH_OTSU)
+    
+    # Find the largest contour (assumed to be the face)
+    contours, _ = cv2.findContours(mask, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
+    
+    if not contours:
+        return face_img  # Return original if no contours found
+    
+    # Find largest contour by area
+    largest_contour = max(contours, key=cv2.contourArea)
+    
+    # Create a new mask with only the largest contour
+    face_mask = np.zeros_like(mask)
+    cv2.drawContours(face_mask, [largest_contour], 0, 255, -1)
+    
+    # Apply morphological operations to improve mask
+    kernel = np.ones((9, 9), np.uint8)
+    face_mask = cv2.dilate(face_mask, kernel, iterations=3)
+    face_mask = cv2.GaussianBlur(face_mask, (11, 11), 0)
+    
+    # Create 3-channel mask
+    face_mask_3channel = cv2.cvtColor(face_mask, cv2.COLOR_GRAY2BGR)
+    
+    # Normalize mask to range 0-1
+    face_mask_3channel = face_mask_3channel.astype(np.float32) / 255.0
+    
+    # Apply mask to original image
+    face_without_bg = face_img.astype(np.float32) * face_mask_3channel
+    
+    # Convert back to uint8
+    face_without_bg = face_without_bg.astype(np.uint8)
+    
+    return face_without_bg

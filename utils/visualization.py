@@ -4,61 +4,6 @@ import cv2
 import io
 from PIL import Image
 
-def plot_similarity_result(face1, face2, similarity_score, is_match):
-    """
-    Create a visualization of face similarity result
-    
-    Args:
-        face1: First face image
-        face2: Second face image
-        similarity_score: Similarity score (0-1)
-        is_match: Boolean indicating if faces match
-        
-    Returns:
-        fig: Matplotlib figure with the visualization
-    """
-    # Create figure
-    fig, axes = plt.subplots(1, 3, figsize=(12, 4))
-    
-    # Convert BGR to RGB for display
-    face1_rgb = cv2.cvtColor(face1, cv2.COLOR_BGR2RGB)
-    face2_rgb = cv2.cvtColor(face2, cv2.COLOR_BGR2RGB)
-    
-    # Display face images
-    axes[0].imshow(face1_rgb)
-    axes[0].set_title("Face 1")
-    axes[0].axis('off')
-    
-    axes[2].imshow(face2_rgb)
-    axes[2].set_title("Face 2")
-    axes[2].axis('off')
-    
-    # Display similarity visualization
-    axes[1].set_xlim(0, 1)
-    axes[1].set_ylim(0, 1)
-    axes[1].axvline(x=0.5, color='gray', linestyle='--', alpha=0.5)  # Threshold line
-    
-    # Draw similarity gauge
-    color = 'green' if is_match else 'red'
-    axes[1].barh(0.5, similarity_score, height=0.3, color=color)
-    
-    # Add similarity score text
-    axes[1].text(0.5, 0.8, f"Similarity: {similarity_score:.2f}", 
-                ha='center', va='center', fontsize=12)
-    
-    # Add match/no match text
-    match_text = "MATCH" if is_match else "NO MATCH"
-    axes[1].text(0.5, 0.2, match_text, 
-                ha='center', va='center', fontsize=14, 
-                fontweight='bold', color=color)
-    
-    axes[1].set_title("Similarity Result")
-    axes[1].axis('off')
-    
-    plt.tight_layout()
-    
-    return fig
-
 def plot_ethnicity_prediction(face_img, ethnicity, confidences):
     """
     Create a visualization of ethnicity prediction
@@ -75,7 +20,10 @@ def plot_ethnicity_prediction(face_img, ethnicity, confidences):
     fig, axes = plt.subplots(1, 2, figsize=(10, 5), gridspec_kw={'width_ratios': [1, 1.5]})
     
     # Convert BGR to RGB for display
-    face_rgb = cv2.cvtColor(face_img, cv2.COLOR_BGR2RGB)
+    if len(face_img.shape) == 3 and face_img.shape[2] == 3:
+        face_rgb = cv2.cvtColor(face_img, cv2.COLOR_BGR2RGB)
+    else:
+        face_rgb = face_img  # Already RGB or grayscale
     
     # Display face image
     axes[0].imshow(face_rgb)
@@ -86,8 +34,8 @@ def plot_ethnicity_prediction(face_img, ethnicity, confidences):
     ethnicities = list(confidences.keys())
     scores = [confidences[e] for e in ethnicities]
     
-    # Sort by confidence score
-    sorted_indices = np.argsort(scores)
+    # Sort by confidence score (descending)
+    sorted_indices = np.argsort(scores)[::-1]
     ethnicities = [ethnicities[i] for i in sorted_indices]
     scores = [scores[i] for i in sorted_indices]
     
@@ -155,15 +103,80 @@ def draw_bounding_box(image, face_rect, label=None, color=(0, 255, 0), thickness
     
     return image_with_box
 
+def draw_landmarks(image, landmarks, radius=2, color=(0, 0, 255), thickness=-1):
+    """
+    Draw facial landmarks on an image
+    
+    Args:
+        image: Input image
+        landmarks: Dictionary containing facial landmarks
+        radius: Circle radius for landmarks
+        color: Color for landmarks in BGR
+        thickness: Circle thickness
+        
+    Returns:
+        image_with_landmarks: Image with drawn landmarks
+    """
+    image_with_landmarks = image.copy()
+    
+    # Draw each landmark
+    for point_name, point in landmarks.items():
+        cv2.circle(image_with_landmarks, point, radius, color, thickness)
+        
+    return image_with_landmarks
+
+def create_processing_steps_visualization(original_img, face_detected_img, aligned_img, normalized_img):
+    """
+    Create a visualization of all preprocessing steps
+    
+    Args:
+        original_img: Original input image
+        face_detected_img: Image with detected face
+        aligned_img: Aligned face image
+        normalized_img: Normalized face image
+        
+    Returns:
+        fig: Matplotlib figure with the visualization
+    """
+    # Create figure
+    fig, axes = plt.subplots(1, 4, figsize=(15, 4))
+    
+    # Convert BGR to RGB for display
+    original_rgb = cv2.cvtColor(original_img, cv2.COLOR_BGR2RGB)
+    face_detected_rgb = cv2.cvtColor(face_detected_img, cv2.COLOR_BGR2RGB)
+    aligned_rgb = cv2.cvtColor(aligned_img, cv2.COLOR_BGR2RGB)
+    normalized_rgb = cv2.cvtColor(normalized_img, cv2.COLOR_BGR2RGB)
+    
+    # Display images
+    axes[0].imshow(original_rgb)
+    axes[0].set_title("Original Image")
+    axes[0].axis('off')
+    
+    axes[1].imshow(face_detected_rgb)
+    axes[1].set_title("Face Detection")
+    axes[1].axis('off')
+    
+    axes[2].imshow(aligned_rgb)
+    axes[2].set_title("Face Alignment")
+    axes[2].axis('off')
+    
+    axes[3].imshow(normalized_rgb)
+    axes[3].set_title("Normalization")
+    axes[3].axis('off')
+    
+    plt.tight_layout()
+    
+    return fig
+
 def fig_to_image(fig):
     """
-    Convert a matplotlib figure to an image
+    Convert a matplotlib figure to a PIL Image
     
     Args:
         fig: Matplotlib figure
         
     Returns:
-        image: PIL Image
+        img: PIL Image
     """
     # Save figure to a byte buffer
     buf = io.BytesIO()

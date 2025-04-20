@@ -1,63 +1,36 @@
 # Sistem Pengenalan Etnis Wajah Indonesia
 
-## Pendahuluan
+## Fitur dan Algoritma
 
-Sistem Pengenalan Etnis Wajah merupakan solusi teknologi komputer vision yang mengintegrasikan tiga algoritma canggih untuk analisis dan klasifikasi wajah: Haar Cascade Classifier untuk deteksi wajah, Jaringan Siamese untuk perbandingan kesamaan wajah, dan Jaringan Saraf Konvolusional (CNN) dengan Transfer Learning untuk klasifikasi etnis.
+### Main (Utama)
 
-## Algoritma Utama
+#### 1. Face Similarity
+Memungkinkan sistem untuk mengidentifikasi dan membandingkan wajah untuk menentukan apakah dua gambar wajah yang berbeda berasal dari orang yang sama.
 
-### 1. Deteksi Wajah: Haar Cascade Classifier
+**Teknologi:**
+- FaceNet Pre-train Models
 
-**Konsep Algoritma:**
-- Dikembangkan oleh Paul Viola dan Michael Jones pada 2001
-- Metode deteksi objek berbasis fitur Haar-like
-- Menggunakan classifier bertingkat dengan konsep AdaBoost
+#### 2. Deteksi Suku/Etnis
+Mengklasifikasikan wajah seseorang ke dalam kategori suku/etnis berdasarkan fitur wajah menggunakan teknik computer vision.
 
-**Cara Kerja:**
-- Membagi gambar menjadi sub-jendela berukuran tetap
-- Menghitung fitur Haar yang merepresentasikan perbedaan intensitas piksel
-- Menggunakan classifier bertingkat untuk mengurangi waktu komputasi
-- Menghasilkan kotak pembatas (bounding box) di sekitar wajah terdeteksi
+**Teknologi:**
+- MTCNN (deteksi wajah)
+- FaceNet Pre-train Models
+- Classifiers (KNN dan SVM)
 
-**Kelebihan:**
-- Komputasi cepat
-- Akurasi baik untuk deteksi wajah frontal
-- Membutuhkan sedikit memori
+### Pendamping
 
-### 2. Perbandingan Kesamaan Wajah: Jaringan Siamese
+#### 1. Gender Detection
+Memungkinkan sistem untuk mengidentifikasi jenis kelamin dari seseorang berdasarkan citra wajahnya. Sistem menganalisis struktur wajah untuk mengklasifikasikan gender secara real-time, lengkap dengan tingkat kepercayaan (confidence score).
 
-**Konsep Algoritma:**
-- Arsitektur jaringan saraf dengan cabang kembar
-- Menggunakan bobot yang sama untuk membandingkan pasangan gambar
-- Bertujuan memetakan gambar ke ruang vektor fitur dimensional rendah
+**Teknologi:**
+- Convolutional Neural Network (CNN) dengan pre-train model DeepFace
 
-**Cara Kerja:**
-- Dua cabang jaringan dengan bobot yang sama
-- Menerima dua gambar masukan
-- Mengekstraksi fitur dari masing-masing gambar
-- Menghitung jarak antara representasi fitur
-- Menggunakan metrik jarak Euclidean atau Cosine
+#### 2. Age Estimation
+Memperkirakan usia seseorang berdasarkan karakteristik visual dari wajahnya. Sistem tidak hanya melihat ciri-ciri yang mencolok seperti kerutan atau tekstur kulit, tetapi juga memanfaatkan fitur-fitur halus yang diperoleh dari lapisan-lapisan model deep learning untuk menghasilkan estimasi usia yang lebih akurat.
 
-**Metrik Perbandingan:**
-- Euclidean Distance: Jarak langsung antara dua titik vektor
-- Cosine Similarity: Mengukur kosinus sudut antara dua vektor
-
-### 3. Klasifikasi Etnis: CNN dengan Transfer Learning
-
-**Konsep Algoritma:**
-- Menggunakan arsitektur MobileNetV2 yang sudah dilatih
-- Memanfaatkan transfer learning untuk adaptasi ke dataset etnis
-- Menambahkan lapisan klasifikasi khusus untuk etnis Indonesia
-
-**Cara Kerja:**
-- Membekukan lapisan dasar MobileNetV2
-- Menambahkan lapisan fully connected
-- Fine-tuning pada dataset etnis Jawa, Sunda, Melayu
-- Menggunakan teknik data augmentation untuk meningkatkan generalisasi
-
-**Teknik Transfer Learning:**
-- Feature Extraction: Menggunakan representasi fitur dari model pra-latih
-- Fine-tuning: Melatih ulang sebagian lapisan dengan dataset spesifik
+**Teknologi:**
+- Convolutional Neural Network (CNN) dengan pre-train model DeepFace
 
 ## Prasyarat Sistem
 
@@ -135,3 +108,11 @@ streamlit run app.py
 - Sistem bersifat eksperimental
 - Akurasi tidak mutlak 100%
 - Pertimbangkan aspek etika penggunaan
+
+## Anggota Kelompok
+
+- Farhan Maulana - 231511044
+- Indah Ratu Pramudita - 2311511050
+- Nazla Kayla - 231511057
+
+**JTK 2023 - Politeknik Negeri Bandung**
