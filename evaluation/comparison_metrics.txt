@@ -1,0 +1,19 @@
+=== Face Comparison Metrics ===
+
+Model: VGG-Face
+Similarity Score: 0.6939642094913125
+Threshold: 0.5
+Predicted Match: True
+Expected Match: False
+True Positive: False
+False Positive: True
+True Negative: False
+False Negative: False
+Area Under Curve (AUC): 0.5
+Precision: 0.0
+Recall: 0.0
+F1-Score: 0.0
+True Acceptance Rate (TAR): 0.0
+False Acceptance Rate (FAR): 1.0
+False Rejection Rate (FRR): 0.0
+Equal Error Rate (EER): 0.5

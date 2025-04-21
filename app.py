@@ -36,7 +36,7 @@ from utils.visualization import (
 )
 
 # Define model paths
-MODEL_PATH = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'models', 'facenet_svm_model.pkl')
+MODEL_PATH = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'models', 'facenet_svm_model_v1.pkl')
 
 @st.cache_resource
 def load_face_detector():
