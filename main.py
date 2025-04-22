@@ -11,6 +11,11 @@ from PIL import Image
 from scipy.spatial.distance import cosine, euclidean
 from utils.facenet_model import FaceNetModel
 from deepface import DeepFace
+import matplotlib.pyplot as plt
+import seaborn as sns
+import numpy as np
+from sklearn.metrics import roc_curve, auc, precision_score, recall_score, f1_score, confusion_matrix
+from scipy.stats import norm
 # Set page config must be the first Streamlit command
 st.set_page_config(
     page_title="Face Recognition System",
@@ -43,7 +48,7 @@ from utils.visualization import (
 )
 
 # Define model paths
-MODEL_PATH = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'models', 'facenet_svm_model.pkl')
+MODEL_PATH = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'models', 'facenet_rf_model.pkl')
 
 @st.cache_resource
 def load_face_detector():
@@ -333,6 +338,267 @@ def generate_demo_similarity_data(num_pairs=100):
     
     return scores_same, scores_diff
 
+import numpy as np
+import matplotlib.pyplot as plt
+import seaborn as sns
+import streamlit as st
+from sklearn.metrics import roc_curve, auc, precision_score, recall_score, f1_score, confusion_matrix
+from scipy.stats import norm
+
+def generate_similarity_data(num_pairs=1000):
+    """
+    Generate synthetic similarity scores for same and different identity pairs
+    
+    Args:
+        num_pairs (int): Number of pairs to generate
+    
+    Returns:
+        tuple: Arrays of similarity scores for same and different identity pairs
+    """
+    # Set random seed for reproducibility
+    np.random.seed(42)
+    
+    # Generate scores for same identity (more clustered, higher scores)
+    same_identity_scores = norm.rvs(loc=0.8, scale=0.1, size=num_pairs)
+    
+    # Generate scores for different identity (more spread out, lower scores)
+    different_identity_scores = norm.rvs(loc=0.3, scale=0.2, size=num_pairs)
+    
+    # Clip scores to [0, 1] range
+    same_identity_scores = np.clip(same_identity_scores, 0, 1)
+    different_identity_scores = np.clip(different_identity_scores, 0, 1)
+    
+    return same_identity_scores, different_identity_scores
+
+def plot_similarity_distribution(same_scores, diff_scores, current_score=None):
+    """
+    Create distribution plot of similarity scores
+    
+    Args:
+        same_scores (array): Similarity scores for same identity pairs
+        diff_scores (array): Similarity scores for different identity pairs
+        current_score (float, optional): Current similarity score to highlight
+    
+    Returns:
+        matplotlib figure
+    """
+    fig, ax = plt.subplots(figsize=(10, 6))
+    
+    # Plot distributions
+    sns.histplot(same_scores, kde=True, color='green', alpha=0.5, label='Same Identity', ax=ax)
+    sns.histplot(diff_scores, kde=True, color='red', alpha=0.5, label='Different Identity', ax=ax)
+    
+    # Highlight current score if provided
+    if current_score is not None:
+        ax.axvline(x=current_score, color='blue', linestyle='--', 
+                   label=f'Current Score: {current_score:.4f}')
+    
+    ax.set_title('Distribution of Face Similarity Scores', fontsize=15)
+    ax.set_xlabel('Similarity Score', fontsize=12)
+    ax.set_ylabel('Frequency', fontsize=12)
+    ax.legend()
+    plt.tight_layout()
+    return fig
+
+def compute_roc_metrics(same_scores, diff_scores):
+    """
+    Compute ROC curve and associated metrics
+    
+    Args:
+        same_scores (array): Similarity scores for same identity pairs
+        diff_scores (array): Similarity scores for different identity pairs
+    
+    Returns:
+        dict: ROC metrics and curve data
+    """
+    # Prepare labels and scores
+    y_true = np.concatenate([np.ones_like(same_scores), np.zeros_like(diff_scores)])
+    y_scores = np.concatenate([same_scores, diff_scores])
+    
+    # Compute ROC curve
+    fpr, tpr, thresholds = roc_curve(y_true, y_scores)
+    roc_auc = auc(fpr, tpr)
+    
+    # Find optimal threshold (Equal Error Rate)
+    eer_idx = np.nanargmin(np.abs(1 - tpr - fpr))
+    eer_threshold = thresholds[eer_idx]
+    
+    return {
+        'fpr': fpr,
+        'tpr': tpr,
+        'thresholds': thresholds,
+        'auc': roc_auc,
+        'eer_threshold': eer_threshold
+    }
+
+def plot_roc_curve(roc_metrics, current_threshold=None):
+    """
+    Plot ROC curve with AUC and optional current threshold
+    
+    Args:
+        roc_metrics (dict): ROC metrics computed earlier
+        current_threshold (float, optional): Current similarity threshold
+    
+    Returns:
+        matplotlib figure
+    """
+    fig, ax = plt.subplots(figsize=(10, 6))
+    ax.plot(roc_metrics['fpr'], roc_metrics['tpr'], 
+             color='blue', label=f'ROC curve (AUC = {roc_metrics["auc"]:.2f})')
+    
+    # Plot optimal threshold point
+    eer_idx = np.nanargmin(np.abs(1 - roc_metrics['tpr'] - roc_metrics['fpr']))
+    ax.scatter(roc_metrics['fpr'][eer_idx], roc_metrics['tpr'][eer_idx], 
+                color='red', label='Optimal Threshold')
+    
+    # Highlight current threshold if provided
+    if current_threshold is not None:
+        # Find the closest point on the ROC curve to the current threshold
+        threshold_idx = np.nanargmin(np.abs(roc_metrics['thresholds'] - current_threshold))
+        ax.scatter(roc_metrics['fpr'][threshold_idx], roc_metrics['tpr'][threshold_idx], 
+                   color='green', label=f'Current Threshold ({current_threshold:.4f})')
+    
+    ax.plot([0, 1], [0, 1], color='gray', linestyle='--')
+    ax.set_xlim([0.0, 1.0])
+    ax.set_ylim([0.0, 1.05])
+    ax.set_xlabel('False Positive Rate', fontsize=12)
+    ax.set_ylabel('True Positive Rate', fontsize=12)
+    ax.set_title('Receiver Operating Characteristic (ROC) Curve', fontsize=15)
+    ax.legend(loc="lower right")
+    ax.grid(True, linestyle='--', alpha=0.7)
+    plt.tight_layout()
+    return fig
+
+def compute_classification_metrics(same_scores, diff_scores, current_score, threshold):
+    """
+    Compute classification metrics
+    
+    Args:
+        same_scores (array): Similarity scores for same identity pairs
+        diff_scores (array): Similarity scores for different identity pairs
+        current_score (float): Current similarity score
+        threshold (float): Classification threshold
+    
+    Returns:
+        dict: Classification metrics
+    """
+    # Prepare labels and scores for synthetic data
+    y_true = np.concatenate([np.ones_like(same_scores), np.zeros_like(diff_scores)])
+    y_scores = np.concatenate([same_scores, diff_scores])
+    y_pred = y_scores >= threshold
+    
+    # Compute metrics for synthetic data
+    precision = precision_score(y_true, y_pred)
+    recall = recall_score(y_true, y_pred)
+    f1 = f1_score(y_true, y_pred)
+    
+    cm = confusion_matrix(y_true, y_pred)
+    tn, fp, fn, tp = cm.ravel()
+    
+    tar = tp / (tp + fn)  # True Acceptance Rate
+    far = fp / (fp + tn)  # False Acceptance Rate
+    frr = fn / (fn + tp)  # False Rejection Rate
+    
+    # Determine current sample's classification
+    current_match = current_score >= threshold
+    
+    return {
+        'precision': precision,
+        'recall': recall,
+        'f1_score': f1,
+        'true_acceptance_rate': tar,
+        'false_acceptance_rate': far,
+        'false_rejection_rate': frr,
+        'current_match': current_match,
+        'confusion_matrix': {
+            'true_negative': tn,
+            'false_positive': fp,
+            'false_negative': fn,
+            'true_positive': tp
+        }
+    }
+
+def create_performance_dashboard_streamlit(current_score, similarity_threshold):
+    """
+    Create a comprehensive performance dashboard in Streamlit
+    
+    Args:
+        current_score (float): Current similarity score
+        similarity_threshold (float): Current similarity threshold
+    """
+    # Generate synthetic similarity scores
+    scores_same, scores_diff = generate_similarity_data(num_pairs=1000)
+    
+    # ROC Metrics
+    roc_metrics = compute_roc_metrics(scores_same, scores_diff)
+    
+    # Distribute visualizations
+    col1, col2 = st.columns(2)
+    
+    # Distribution Plot
+    with col1:
+        st.subheader("Similarity Score Distribution")
+        dist_fig = plot_similarity_distribution(
+            scores_same, scores_diff, current_score=current_score)
+        st.pyplot(dist_fig)
+        plt.close(dist_fig)
+    
+    # ROC Curve
+    with col2:
+        st.subheader("ROC Curve")
+        roc_fig = plot_roc_curve(
+            roc_metrics, current_threshold=similarity_threshold)
+        st.pyplot(roc_fig)
+        plt.close(roc_fig)
+    
+    # Compute metrics
+    metrics = compute_classification_metrics(
+        scores_same, scores_diff, current_score, similarity_threshold)
+    
+    # Match Classification
+    st.subheader("Similarity Classification")
+    
+    # Color-coded match status
+    if metrics['current_match']:
+        st.success(f"🟢 MATCH (Score: {current_score:.4f} ≥ Threshold: {similarity_threshold:.4f})")
+    else:
+        st.error(f"🔴 NO MATCH (Score: {current_score:.4f} < Threshold: {similarity_threshold:.4f})")
+    
+    # Metrics Display
+    st.subheader("Performance Metrics")
+    
+    # Create columns for metrics
+    col1, col2, col3 = st.columns(3)
+    
+    with col1:
+        st.metric("Precision", f"{metrics['precision']:.2%}")
+        st.metric("True Acceptance Rate", f"{metrics['true_acceptance_rate']:.2%}")
+    
+    with col2:
+        st.metric("Recall", f"{metrics['recall']:.2%}")
+        st.metric("False Acceptance Rate", f"{metrics['false_acceptance_rate']:.2%}")
+    
+    with col3:
+        st.metric("F1-Score", f"{metrics['f1_score']:.4f}")
+        st.metric("False Rejection Rate", f"{metrics['false_rejection_rate']:.2%}")
+    
+    # Additional insights
+    st.subheader("Model Performance Insights")
+    st.markdown(f"""
+    **Analisis Threshold:**
+    - Threshold Saat Ini: {similarity_threshold:.4f}
+    - Threshold Optimal (EER): {roc_metrics['eer_threshold']:.4f}
+    - Area Under ROC Curve (AUC): {roc_metrics['auc']:.4f}
+
+    **Interpretasi:**
+    - Skor saat ini menentukan *match* berdasarkan *threshold* yang dipilih
+    - Metrik dihitung menggunakan data sintetis untuk memberikan evaluasi performa secara kontekstual
+    - Penyesuaian *threshold* dapat dilakukan untuk menyeimbangkan antara keamanan dan kenyamanan penggunaan
+    """)
+
+    # Explicitly close all remaining plots
+    plt.close('all')
+
 def main():
     try:
         # Set app title
@@ -396,7 +662,7 @@ def main():
             **Teknologi:**
             - MTCNN (deteksi wajah)
             - FaceNet Pre-train Models
-            - Classifiers (SVM)
+            - Classifiers (K-Nearest Neighbors, SVM, Random Forest)
 
             ### Fitur Pendamping
 
@@ -457,7 +723,7 @@ def main():
                 "Detection Confidence Threshold", 
                 min_value=0.0, 
                 max_value=1.0, 
-                value=0.5,
+                value=0.6,
                 help="Minimum confidence required for face detection"
             )
             
@@ -495,7 +761,6 @@ def main():
                     # Process the captured image
                     process_image(image, face_detector, face_embedder, ethnicity_classifier, detection_threshold)
         
-        # Face Similarity section
         elif app_mode == "Face Similarity":
             st.header("Face Similarity Comparison")
             
@@ -510,20 +775,8 @@ def main():
                 help="Minimum confidence required for face detection"
             )
             
-            similarity_threshold = st.sidebar.slider(
-                "Similarity Threshold", 
-                min_value=0.0, 
-                max_value=1.0, 
-                value=deepface_similarity.threshold,
-                help="Threshold for determining face match"
-            )
-            
-            model_name = st.sidebar.selectbox(
-                "DeepFace Model",
-                ["VGG-Face", "Facenet", "Facenet512", "ArcFace", "OpenFace", "DeepFace", "DeepID"],
-                index=0,
-                help="Deep learning model to use for face embedding extraction"
-            )
+            # Fixed similarity threshold at 0.6
+            similarity_threshold = 0.6
             
             distance_metric = st.sidebar.selectbox(
                 "Distance Metric",
@@ -534,164 +787,75 @@ def main():
             
             # Update similarity settings
             deepface_similarity.threshold = similarity_threshold
-            deepface_similarity.model_name = model_name
+            deepface_similarity.model_name = "VGG-Face"  
             deepface_similarity.distance_metric = distance_metric
             
-            # Choose operation mode
-            operation_mode = st.radio(
-                "Choose operation mode:", 
-                ["Compare Two Faces", "View Performance Metrics"]
-            )
+            st.markdown("### Upload Face Images for Comparison")
             
-            if operation_mode == "Compare Two Faces":
-                st.markdown("### Upload Face Images for Comparison")
+            # Create two columns for face uploads
+            col1, col2 = st.columns(2)
+            
+            with col1:
+                st.markdown("#### Face 1")
+                uploaded_file1 = st.file_uploader("Choose first face image", type=["jpg", "jpeg", "png"])
                 
-                # Create two columns for face uploads
-                col1, col2 = st.columns(2)
-                
-                with col1:
-                    st.markdown("#### Face 1")
-                    uploaded_file1 = st.file_uploader("Choose first face image", type=["jpg", "jpeg", "png"])
+                # Show placeholder or uploaded image
+                if uploaded_file1 is not None:
+                    # Load image
+                    face1_img = load_image_from_upload(uploaded_file1)
                     
-                    # Show placeholder or uploaded image
-                    if uploaded_file1 is not None:
-                        # Load image
-                        face1_img = load_image_from_upload(uploaded_file1)
-                        
-                        # Display image
-                        st.image(cv2.cvtColor(face1_img, cv2.COLOR_BGR2RGB), caption="Face 1")
+                    # Display image
+                    st.image(cv2.cvtColor(face1_img, cv2.COLOR_BGR2RGB), caption="Face 1")
+                
+            with col2:
+                st.markdown("#### Face 2")
+                uploaded_file2 = st.file_uploader("Choose second face image", type=["jpg", "jpeg", "png"])
+                
+                # Show placeholder or uploaded image
+                if uploaded_file2 is not None:
+                    # Load image
+                    face2_img = load_image_from_upload(uploaded_file2)
                     
-                with col2:
-                    st.markdown("#### Face 2")
-                    uploaded_file2 = st.file_uploader("Choose second face image", type=["jpg", "jpeg", "png"])
+                    # Display image
+                    st.image(cv2.cvtColor(face2_img, cv2.COLOR_BGR2RGB), caption="Face 2")
+            
+            # Compare button
+            if uploaded_file1 is not None and uploaded_file2 is not None:
+                if st.button("Compare Faces"):
+                    # Load images
+                    face1_img = load_image_from_upload(uploaded_file1)
+                    face2_img = load_image_from_upload(uploaded_file2)
                     
-                    # Show placeholder or uploaded image
-                    if uploaded_file2 is not None:
-                        # Load image
-                        face2_img = load_image_from_upload(uploaded_file2)
+                    # Compare faces using DeepFace
+                    face1_norm, face2_norm, similarity_score, is_match = compare_faces_deepface(
+                        face1_img, face2_img, face_detector, deepface_similarity, detection_threshold)
+                    
+                    if face1_norm is not None and face2_norm is not None:
+                        # Display comparison results
+                        st.markdown("### Face Comparison Results")
                         
-                        # Display image
-                        st.image(cv2.cvtColor(face2_img, cv2.COLOR_BGR2RGB), caption="Face 2")
-                
-                # Compare button
-                if uploaded_file1 is not None and uploaded_file2 is not None:
-                    if st.button("Compare Faces"):
-                        # Load images
-                        face1_img = load_image_from_upload(uploaded_file1)
-                        face2_img = load_image_from_upload(uploaded_file2)
+                        # Create visualization
+                        fig = plot_face_comparison(
+                            face1_norm, face2_norm, similarity_score, is_match, deepface_similarity.threshold)
+                        st.pyplot(fig)
                         
-                        # Compare faces using DeepFace
-                        face1_norm, face2_norm, similarity_score, is_match = compare_faces_deepface(
-                            face1_img, face2_img, face_detector, deepface_similarity, detection_threshold)
+                        # Detailed metrics
+                        st.markdown("### Detailed Metrics")
+                        st.markdown(f"**Similarity Score:** {similarity_score:.4f}")
+                        st.markdown(f"**Threshold:** {deepface_similarity.threshold:.4f}")
+                        st.markdown(f"**Match Decision:** {'MATCH' if is_match else 'NO MATCH'}")
+                        st.markdown(f"**Model Used:** {deepface_similarity.model_name}")
+                        st.markdown(f"**Distance Metric:** {deepface_similarity.distance_metric}")
                         
-                        if face1_norm is not None and face2_norm is not None:
-                            # Display comparison results
-                            st.markdown("### Face Comparison Results")
-                            
-                            # Create visualization
-                            fig = plot_face_comparison(
-                                face1_norm, face2_norm, similarity_score, is_match, deepface_similarity.threshold)
-                            st.pyplot(fig)
-                            
-                            # Detailed metrics
-                            st.markdown("### Detailed Metrics")
-                            st.markdown(f"**Similarity Score:** {similarity_score:.4f}")
-                            st.markdown(f"**Threshold:** {deepface_similarity.threshold:.4f}")
-                            st.markdown(f"**Match Decision:** {'MATCH' if is_match else 'NO MATCH'}")
-                            st.markdown(f"**Model Used:** {deepface_similarity.model_name}")
-                            st.markdown(f"**Distance Metric:** {deepface_similarity.distance_metric}")
-                        else:
-                            st.error("Face comparison failed. Please try with different images.")
-                            
-            elif operation_mode == "View Performance Metrics":
-                st.markdown("### Face Recognition Performance Metrics")
-                
-                # Add explanatory text about performance metrics
-                st.markdown("""
-                Face recognition systems need to balance between two types of errors:
-                
-                1. **False Accepts (Type I Error)**: When the system incorrectly matches two different individuals.
-                2. **False Rejects (Type II Error)**: When the system fails to match two images of the same person.
-                
-                The following visualizations show key performance metrics that help evaluate the system and 
-                choose the optimal threshold.
-                """)
-                
-                # Get the demo similarity scores
-                scores_same, scores_diff = generate_demo_similarity_data(num_pairs=200)
-                
-                # Create dashboard using performance_visualization module
-                performance_figs, metrics = create_performance_dashboard(
-                    scores_same, scores_diff, current_threshold=similarity_threshold)
-                
-                # Display key metrics at current threshold
-                st.subheader("Current Performance at Threshold = {:.2f}".format(similarity_threshold))
-                
-                # Create metrics display
-                col1, col2, col3 = st.columns(3)
-                with col1:
-                    st.metric("True Acceptance Rate (TAR)", "{:.2f}%".format(metrics['tar_current'] * 100))
-                    st.metric("False Acceptance Rate (FAR)", "{:.2f}%".format(metrics['far_current'] * 100))
-                with col2:
-                    st.metric("False Rejection Rate (FRR)", "{:.2f}%".format(metrics['frr_current'] * 100))
-                    st.metric("Equal Error Rate (EER)", "{:.2f}%".format(metrics['eer'] * 100))
-                with col3:
-                    st.metric("Precision", "{:.2f}%".format(metrics['precision_current'] * 100))
-                    st.metric("F1-Score", "{:.2f}".format(metrics['f1_current']))
-                
-                # ROC curve with AUC
-                st.subheader("ROC Curve")
-                st.markdown("""
-                The Receiver Operating Characteristic (ROC) curve shows the trade-off between True Positive Rate (TPR) 
-                and False Positive Rate (FPR) at different threshold values. The Area Under Curve (AUC) is a measure of 
-                the model's ability to discriminate between positive and negative classes.
-                
-                **Higher AUC value (closer to 1.0) indicates better performance.**
-                """)
-                st.pyplot(performance_figs[1])
-                
-                # TAR, FAR, FRR vs Threshold
-                st.subheader("TAR, FAR, and FRR vs. Threshold")
-                st.markdown("""
-                This graph shows how the True Acceptance Rate (TAR), False Acceptance Rate (FAR), and 
-                False Rejection Rate (FRR) change with different threshold values.
-                
-                **The Equal Error Rate (EER) point is where FAR equals FRR**. Lower EER indicates better performance.
-                """)
-                st.pyplot(performance_figs[0])
-                
-                # Precision, Recall, F1-Score
-                st.subheader("Precision, Recall, and F1-Score vs. Threshold")
-                st.markdown("""
-                - **Precision**: Proportion of positive identifications that were actually correct.
-                - **Recall (TAR)**: Proportion of actual positives that were correctly identified.
-                - **F1-Score**: Harmonic mean of precision and recall, providing a balance between the two.
-                
-                The optimal threshold often maximizes the F1-Score, balancing precision and recall.
-                """)
-                st.pyplot(performance_figs[2])
-                
-                # Summary of optimal thresholds
-                st.subheader("Optimal Thresholds")
-                st.markdown(f"""
-                Based on the performance analysis, the following thresholds are recommended:
-                
-                - **Current Threshold**: {metrics['current_threshold']:.3f}
-                - **Equal Error Rate (EER) Threshold**: {metrics['eer_threshold']:.3f} (EER = {metrics['eer']:.3f})
-                - **Optimal F1-Score Threshold**: {metrics['best_f1_threshold']:.3f} (F1 = {metrics['best_f1']:.3f})
-                
-                The choice of threshold depends on your specific security requirements:
-                - For higher security (fewer false accepts), use a higher threshold
-                - For better user experience (fewer false rejects), use a lower threshold
-                """)
-                
-                # Summary of model configuration
-                st.subheader("Current Model Configuration")
-                st.markdown(f"""
-                - **Deep Learning Model**: {deepface_similarity.model_name}
-                - **Distance Metric**: {deepface_similarity.distance_metric}
-                - **Similarity Threshold**: {deepface_similarity.threshold:.3f}
-                """)
+                        # Performance Metrics Dashboard
+                        st.markdown("### Visualization")
+                        create_performance_dashboard_streamlit(
+                            current_score=similarity_score,
+                            similarity_threshold=deepface_similarity.threshold
+                        )
+                    else:
+                        st.error("Face comparison failed. Please try with different images.")
+                        
                 
     except Exception as e:
         st.error(f"An unexpected error occurred: {e}")
